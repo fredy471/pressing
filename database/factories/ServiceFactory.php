@@ -20,10 +20,8 @@ class ServiceFactory extends Factory
     {
         return [
             "name" => fake()->unique()->randomElement([
-                'lavage',
-                'repassage',
-                'blanchiseerie',
-                'nettoyage a sec'
+                'Lavage & Repassage',
+                'Repassage',
             ]),
             "description" => fake()->sentence(),
             "is_active" =>true,

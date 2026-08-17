@@ -9,49 +9,90 @@ use App\Models\ServiceClothesPrice;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Order;
+use App\Models\OrderItem;
 
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-
         $this->call([
             RoleSeeder::class,
         ]);
 
-        Service::factory()->count(4)->create();
+        User::factory()->client()->count(50)->create();
+        User::factory()->agent()->count(10)->create();
+        Service::factory()->count(2)->create();
         ClothesType::factory()->count(5)->create();
 
-        $user = User::create([
-            "name" => "user1",
-            "email" => "user@example.com",
-            "phone" => "0190909090",
+        $agents = User::create([
+            "name" => "cololo",
+            "email" => "cololo@example.com",
+            "phone" => "0194949494",
             "password" => Hash::make('1234'),
         ]);
-        $user->assignRole('client');
+
+        $agents->assignRole('agent');
 
         $admin = User::create([
             "name" => "admin",
             "email" => "admin@example.com",
             "phone" => "0194949494",
-            "password" => hash::make('1234'),
+            "password" => Hash::make('1234'),
         ]);
+
         $admin->assignRole('admin');
 
-
+        // Création des prix pour chaque combinaison service / vêtement
         foreach (Service::all() as $service) {
             foreach (ClothesType::all() as $clothesType) {
                 ServiceClothesPrice::create([
                     'service_id' => $service->id,
                     'clothes_type_id' => $clothesType->id,
-                    'price' => fake()->numberBetween(300, 2000),
+                    'price' => fake()->numberBetween(550, 7200),
                 ]);
             }
         }
+
+        // Création des commandes
+        Order::factory()->count(30)->create()->each(function ($order) {
+
+            $itemCount = fake()->numberBetween(1, 3);
+            $total = 0;
+
+            for ($i = 0; $i < $itemCount; $i++) {
+
+                // Chaque article peut avoir un service différent
+                $service = Service::inRandomOrder()->first();
+
+                $priceEntry = ServiceClothesPrice::where('service_id', $service->id)
+                    ->inRandomOrder()
+                    ->first();
+
+                if (!$priceEntry) {
+                    continue;
+                }
+
+                $quantity = fake()->numberBetween(1, 5);
+                $subtotal = $priceEntry->price * $quantity;
+
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'service_id' => $service->id,
+                    'clothes_type_id' => $priceEntry->clothes_type_id,
+                    'quantity' => $quantity,
+                    'unit_price' => $priceEntry->price,
+                    'subtotal' => $subtotal,
+                ]);
+
+                $total += $subtotal;
+            }
+
+            $order->update([
+                'total_amount' => $total
+            ]);
+        });
     }
 }

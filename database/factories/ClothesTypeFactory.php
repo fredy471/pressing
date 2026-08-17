@@ -21,6 +21,9 @@ class ClothesTypeFactory extends Factory
             "name" => fake()->unique()->randomElement([
                 'Chemise', 'Pantalon', 'Robe', 'Costume', 'veste'
             ]),
+            "category" => fake()->randomElement([
+                'haut', 'bas', 'ensemble'
+            ]),
         ];
     }
 }

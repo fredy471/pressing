@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Override;
 
 class LoginRequest extends FormRequest
 {
@@ -29,7 +30,17 @@ class LoginRequest extends FormRequest
     {
         return [
             'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'password' => ['required', 'string','min:5'],
+        ];
+    }
+
+
+    #[Override]
+    public function messages(): array
+    {
+        return [
+            'email' => 'les donnees que vous inserez sont invalides',
+            'password' => 'les donnees que vous inserez sont invalides',
         ];
     }
 
@@ -65,7 +76,7 @@ class LoginRequest extends FormRequest
         }
 
         event(new Lockout($this));
-
+        
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([

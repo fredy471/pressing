@@ -15,11 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('agent_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('service_id')->constrained()->onDelete('cascade');
             $table->string('tracking_code')->unique();
-            $table->enum('statut',['en_attente', 'reçue', 'en_lavage', 'terminée', 'livrée', 'anulée'])->default('en_attente');
-            $table->enum('delivery_mode', ['collecte_livraison', 'dépot_physique']);
-            $table->decimal('total_amount', 10,2)->default('0');
+            $table->string('statut')->default('en_attente');
+            $table->string('delivery_mode')->default('collecte_livraison');
+            $table->decimal('total_amount', 10, 2)->default('0');
             $table->dateTime('deposit_deadline')->nullable();
             $table->dateTime('deposited_at')->nullable();
             $table->timestamps();
