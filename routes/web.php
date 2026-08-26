@@ -4,9 +4,9 @@ use Illuminate\Support\Facades\Route;
 
 
 // Page d'accueil publique 
-Route::get('/', [PageController::class, 'index'])->name('home');
-Route::get('/services', [PageController::class, 'services'])->name('services');
-Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::get('/', [App\Http\Controllers\PageController::class, 'index'])->name('home');
+Route::get('/services', [App\Http\Controllers\PageController::class, 'services'])->name('services');
+Route::get('/contact', [App\Http\Controllers\PageController::class, 'contact'])->name('contact');
 
 // Imports pour l'espace Client
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
@@ -20,7 +20,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\PriceController as AdminPriceController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
-use App\Http\Controllers\Admin\ClothesTypeController as AdminClothesPriceController;
+use App\Http\Controllers\Admin\ClothesTypeController as AdminClothesTypeController;
 
 
 
@@ -56,6 +56,23 @@ Route::middleware(['auth', 'role:agent'])->prefix('agent')->name('agent.')->grou
 // ==========================================
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    Route::resource('services', AdminServiceController::class)->except(['destroy']);
+    Route::patch('services/{service}/toggle-active', [AdminServiceController::class, 'toggleActive'])->name('services.toggle-active');
+    Route::patch('/services/{service}/description', [AdminServiceController::class, 'updateDescription'])
+    ->name('services.update-description');
+
+    Route::resource('clothes-types', AdminClothesTypeController::class)->except(['destroy', 'update']);
+    Route::patch('clothes-types/{clothes-type}/toggle-active', [AdminClothesTypeController::class, 'toggleActive'])->name('clothes-types.toggle-active');
+    Route::patch('clothes-types/{clothes-type}/update', [AdminClothesTypeController::class, 'updateCategory'])->name('clothes-types.update-category');
+    
+    Route::resource('users', AdminUserController::class);
+
+    Route::get('/prices', [AdminPriceController::class, 'index'])->name('prices.index');
+    Route::patch('/prices', [AdminPriceController::class, 'update'])->name('prices.update');
+
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
 });
 
 // Inclusion des routes d'authentification (Breeze)

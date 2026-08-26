@@ -3,63 +3,39 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+   public function index(Request $request): View
     {
-        //
-    }
+        $orders = Order::with(['user', 'agent', 'service'])
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $query->where('tracking_code', 'like', '%' . $request->search . '%');
+            })
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        return view('admin.orders.index', compact('orders'));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Order $order): View
     {
-        //
+        $order->load(['user', 'agent', 'service', 'items.clothesType', 'payments']);
+
+        return view('admin.orders.show', compact('order'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('phone', 10)->unique();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('email_verified_at')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->string('password');
+            $table->softDeletes();   
+            $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

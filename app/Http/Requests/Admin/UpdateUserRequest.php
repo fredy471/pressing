@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
+
 class UpdateUserRequest extends FormRequest
 {
     /**
@@ -12,7 +13,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->hasRole('admin');
     }
 
     /**
@@ -23,12 +24,15 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
             'phone' => 'required|string|size:10|unique:users,phone,' . $this->user->id . '|regex:/[0-9]+$/',
-            'email' => 'required|string|unique:users,email,' . $this->user->id,
-            'created_by' => 'required|string|exists:users,id',
-            'password' => 'nullable|string|min:5|confirmed',
-            'role' => 'required|Rule:in:client, agent',
+
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'phone' => 'le numero de telephone est requis' . $this->user->id,
         ];
     }
 }

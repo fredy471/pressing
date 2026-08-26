@@ -8,10 +8,13 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Spatie\Permission\Traits\HasRoles;
+
 // use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
+    use HasRoles;
     /**
      * Display the login view.
      */
@@ -20,9 +23,6 @@ class AuthenticatedSessionController extends Controller
         return view('auth.login');
     }
 
-    /**
-     * Handle an incoming authentication request.
-     */
     /**
      * Handle an incoming authentication request.
      */

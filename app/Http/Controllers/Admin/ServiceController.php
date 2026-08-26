@@ -37,7 +37,7 @@ class ServiceController extends Controller
     {
         Service::create($request->validated());
         return redirect()->route('admin.services.index')
-            ->with('success', 'Service créé avec succès.');
+            ->with('success', 'Service crée avec succès.');
     }
 
     /**
@@ -51,31 +51,34 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateServiceRequest $request, Service $service): RedirectResponse
+   public function update(UpdateServiceRequest $request, Service $service): RedirectResponse
     {
-        $service->update($request->validated());
+        // On s'assure de ne mettre à jour QUE la description (le prix et le nom restent figés)
+        $service->update($request->only('description'));
 
         return redirect()->route('admin.services.index')
-            ->with('success', 'Service mis à jour.');
+            ->with('success', 'Description mise à jour.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Service $service)
+    public function toggleActive(Service $service): RedirectResponse
     {
-        $service = Service::findOrFail($service);
-        $service->delete();
+        $service->update([
+            'is_active' => !$service->is_active 
+        ]);
+        $status = $service->is_active ? 'activé' : 'désactivé';
 
         return redirect()->route('admin.services.index')
-            ->with('success', 'Service supprimé avec succès.');
+            ->with('success', "Le service a été {$status} avec succès.");
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Service $service)
     {
-        //
+        return view('admin.services.show', compact('service'));
     }
 }

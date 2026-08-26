@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\View\View;
 use App\Http\Requests\Admin\StoreUserRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Admin\UpdateUserRequest;
 
@@ -17,9 +18,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        // je prend tout les informations avec les roles aussi
-        $user = User::with('roles')->get();
-        return view('admin.users.index', compact('user'));
+        $users = User::with('roles')->get();
+        return view('admin.users.index', compact('users'));
     }
 
     /**
@@ -37,13 +37,15 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $role = $data['role'];
-        $data['password'] = $role === 'client' ? Hash::make('client@2026') : Hash::make('agent@2026');
+        $temporaryPassword = Str::random(8);
+        $data['password'] = Hash::make($temporaryPassword);
         $data['created_by'] = auth()->id();
         unset($data['role']);
-
+        // TODO : envoyer $temporaryPassword au user via email/WhatsApp
+        // Mail::to($user->email)->send(new TemporaryPasswordMail($temporaryPassword));
         $user = User::create($data);
         $user->assignRole($role);
-        return redirect()->route('admin.users.index')->with('success', 'Utilisateur cree avec succes !');
+        return redirect()->route('admin.users.index')->with('success', 'Utilisateur cree avec success. !');
     }
 
     /**
@@ -60,22 +62,33 @@ class UserController extends Controller
      */
     public function edit(User $user): View
     {
-        return view('admin.users.update', compact('user'));
+        return view('admin.users.edit', compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        //
+        $data = $request->validated();
+
+        $user->update($data);
+        return redirect()->route('admin.users.index')->with('success', 'Utilisateur mis à jour.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function delete(User $user): RedirectResponse
     {
-        //
+        if (auth()->id() === $user->id()) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Impossible de supprimer votre propre compte.');
+        }
+        $role = $user->getRoleNames()->first() ?? 'Aucun rôle';
+        $user->delete();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', "Le compte de l'utilisateur (Rôle : {$role}) a été supprimé avec succès.");
     }
 }

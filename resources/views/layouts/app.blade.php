@@ -33,9 +33,8 @@
 </script>
 
 <body class="font-sans antialiased">
-    <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
     <x-header />
-    <div class="min-h-screen bg-gray-100">
+    <div class="flex min-h-screen flex-col font-sans text-gray-900 antialiased">
 
 
         <!-- Page Content -->

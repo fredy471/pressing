@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         $agents = User::create([
             "name" => "cololo",
             "email" => "cololo@example.com",
-            "phone" => "0194949494",
+            "phone" => "0188888888",
             "password" => Hash::make('1234'),
         ]);
 
@@ -39,8 +39,8 @@ class DatabaseSeeder extends Seeder
         $admin = User::create([
             "name" => "admin",
             "email" => "admin@example.com",
-            "phone" => "0194949494",
-            "password" => Hash::make('1234'),
+            "phone" => "0177777777",
+            "password" => Hash::make('12345'),
         ]);
 
         $admin->assignRole('admin');

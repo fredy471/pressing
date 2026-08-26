@@ -28,8 +28,7 @@ class StoreUserRequest extends FormRequest
             'name' => 'required|string|max:255',
             'phone' =>'required|string|size:10|unique:users,phone|regex:/[0-9]+$/',
             'email' => 'required|string|unique:users,email',
-            'password' => 'required|string|min:5|confirmed',
-            'role' => 'required|Rule:in:client, agent',
+            'role' => 'required|Rule:in:agent,client',
         ];
     }
 

@@ -30,7 +30,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string','min:5'],
+            'password' => ['required', 'string', 'min:5'],
         ];
     }
 
@@ -39,8 +39,8 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email' => 'les donnees que vous inserez sont invalides',
-            'password' => 'les donnees que vous inserez sont invalides',
+           'email' => 'donnees invalides',
+           'password' => 'informations invalides'
         ];
     }
 
@@ -76,7 +76,7 @@ class LoginRequest extends FormRequest
         }
 
         event(new Lockout($this));
-        
+
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
@@ -92,6 +92,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }
