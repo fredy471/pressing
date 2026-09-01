@@ -14,15 +14,15 @@ class OrderController extends Controller
      */
    public function index(Request $request): View
     {
-        $orders = Order::with(['user', 'agent', 'service'])
+        $orders = Order::with(['user', 'agent', 'items.service'])
             ->when($request->filled('status'), function ($query) use ($request) {
-                $query->where('status', $request->status);
+                $query->where('statut', $request->status);
             })
             ->when($request->filled('search'), function ($query) use ($request) {
                 $query->where('tracking_code', 'like', '%' . $request->search . '%');
             })
             ->latest()
-            ->paginate(20)
+            ->paginate(10)
             ->withQueryString();
 
         return view('admin.orders.index', compact('orders'));
@@ -33,9 +33,10 @@ class OrderController extends Controller
      */
     public function show(Order $order): View
     {
-        $order->load(['user', 'agent', 'service', 'items.clothesType', 'payments']);
+        $order->load(['user', 'agent', 'items.service', 'items.clothesType', 'payments']);
+        $successfulPayment = $order->payments->firstWhere('statut', 'reussi');
 
-        return view('admin.orders.show', compact('order'));
+        return view('admin.orders.show', compact('order', 'successfulPayment'));
     }
 
 }

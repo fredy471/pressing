@@ -1,59 +1,70 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+@extends('layouts.guest')
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Nom')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+@section('title', 'Inscription')
+
+@section('content')
+    <div class="w-full max-w-md mx-auto px-4 py-12">
+        
+        <!-- En-tête du formulaire -->
+        <div class="text-center mb-8">
+            <h1 class="font-display font-bold text-2xl text-text">Créer un compte</h1>
+            <p class="text-text text-sm mt-1">Rejoignez notre pressing pour suivre vos commandes</p>
         </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+        <form method="POST" action="{{ route('register') }}" class="space-y-5">
+            @csrf
 
-         <!-- Phone Address -->
-        <div class="mt-4">
-            <x-input-label for="phone" :value="__('Telephone')" />
-            <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="old('phone')" required autocomplete="tel" />
-            <x-input-error :messages="$errors->get('phone')" class="mt-2" />
-        </div>
+            <!-- Nom complet -->
+            <div>
+                <label for="name" class="block text-sm font-medium text-text mb-1.5">{{ __('Nom complet') }}</label>
+                <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name"
+                    class="w-full rounded-lg border-muted/20 bg-bg text-text focus:border-accent focus:ring-accent text-sm">
+                <x-input-error :messages="$errors->get('name')" class="mt-1.5 text-xs text-red-500" />
+            </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Mot de passe')" />
+            <!-- Email -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-text mb-1.5">{{ __('Email') }}</label>
+                <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username"
+                    class="w-full rounded-lg border-muted/20 bg-bg text-text focus:border-accent focus:ring-accent text-sm">
+                <x-input-error :messages="$errors->get('email')" class="mt-1.5 text-xs text-red-500" />
+            </div>
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
+            <!-- Téléphone -->
+            <div>
+                <label for="phone" class="block text-sm font-medium text-text mb-1.5">{{ __('Téléphone') }}</label>
+                <input id="phone" type="tel" name="phone" value="{{ old('phone') }}" required autocomplete="tel"
+                    class="w-full rounded-lg border-muted/20 bg-bg text-text focus:border-accent focus:ring-accent text-sm">
+                <x-input-error :messages="$errors->get('phone')" class="mt-1.5 text-xs text-red-500" />
+            </div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+            <!-- Mot de passe -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-text mb-1.5">{{ __('Mot de passe') }}</label>
+                <input id="password" type="password" name="password" required autocomplete="new-password"
+                    class="w-full rounded-lg border-muted/20 bg-bg text-text focus:border-accent focus:ring-accent text-sm">
+                <x-input-error :messages="$errors->get('password')" class="mt-1.5 text-xs text-red-500" />
+            </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirmer votre mot de passe')" />
+            <!-- Confirmation du mot de passe -->
+            <div>
+                <label for="password_confirmation" class="block text-sm font-medium text-text mb-1.5">{{ __('Confirmer le mot de passe') }}</label>
+                <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password"
+                    class="w-full rounded-lg border-muted/20 bg-bg text-text focus:border-accent focus:ring-accent text-sm">
+                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1.5 text-xs text-red-500" />
+            </div>
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
+            <!-- Bouton d'inscription -->
+            <button type="submit"
+                class="w-full bg-accent text-inverse font-medium text-sm py-3 rounded-full hover:opacity-90 transition shadow-sm shadow-accent/20">
+                {{ __("S'inscrire") }}
+            </button>
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Déjà un compte ?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('S\'inscrire') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+            <!-- Lien de connexion -->
+            <p class="text-center text-sm text-muted pt-2">
+                Déjà un compte ?
+                <a href="{{ route('login') }}" class="text-accent font-medium hover:underline">Se connecter</a>
+            </p>
+        </form>
+    </div>
+@endsection

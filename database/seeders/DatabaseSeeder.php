@@ -11,6 +11,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Payment;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,7 +32,8 @@ class DatabaseSeeder extends Seeder
             "name" => "cololo",
             "email" => "cololo@example.com",
             "phone" => "0188888888",
-            "password" => Hash::make('1234'),
+            "adresses" => 'cotonou',
+            "password" => Hash::make('12345'),
         ]);
 
         $agents->assignRole('agent');
@@ -40,6 +42,7 @@ class DatabaseSeeder extends Seeder
             "name" => "admin",
             "email" => "admin@example.com",
             "phone" => "0177777777",
+            "adresses" => 'calavi',
             "password" => Hash::make('12345'),
         ]);
 
@@ -94,5 +97,8 @@ class DatabaseSeeder extends Seeder
                 'total_amount' => $total
             ]);
         });
+
+        //paiemennt
+        Payment::factory()->count(30)->create();
     }
 }

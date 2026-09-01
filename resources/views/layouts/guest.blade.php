@@ -34,11 +34,11 @@
     window.toggleMobileNav = toggleMobileNav;
 </script>
 
-<body class="flex min-h-screen flex-col font-sans text-gray-900 antialiased">
+<body class="flex min-h-screen flex-col font-sans text-gray-900 antialiased bg-bg">
     <x-header />
 
     <main class="flex-1">
-         {{ $slot}}
+         @yield('content')
     </main>
 
     <x-footer />

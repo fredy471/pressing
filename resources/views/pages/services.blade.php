@@ -1,4 +1,6 @@
-<x-guest-layout>
+@extends('layouts.guest')
+@section('title', 'Service&tarifs')
+@section('content')
     <div class="py-12 max-w-7xl mx-auto px-4" x-data="orderForm()">
         <h1 class="text-3xl font-bold mb-8">Nos Services & Tarifs</h1>
 
@@ -62,4 +64,4 @@
             }
         }
     </script>
-</x-guest-layout>
+@endsection

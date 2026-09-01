@@ -13,14 +13,16 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->constrained()->onDelete('cascade');
-            $table->decimal('amount', 10, 2);
-            $table->enum('method', ['mobile_money', 'carte', 'paiement_livraison']);
-            $table->string('provider')->default('fedapay');
-            $table->enum('status', ['en_attente', 'reussi', 'echoue', 'rembourse'])->default('en_attente');
+            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('amount');
+            $table->char('currency', 3)->default('XOF');
+            $table->enum('method', ['mobile_money','carte']);
+            $table->string('provider', 30)->default('fedapay');
+            $table->enum('statut', ['en_attente','reussi','echoue','rembourse',])->default('en_attente');
             $table->string('provider_reference')->nullable();
-            $table->dateTime('paid_at')->nullable();
+            $table->timestamp('paid_at')->nullable();
             $table->timestamps();
+            $table->unique(['provider','provider_reference']);
         });
     }
 

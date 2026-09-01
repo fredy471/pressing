@@ -33,16 +33,7 @@ class LoginRequest extends FormRequest
             'password' => ['required', 'string', 'min:5'],
         ];
     }
-
-
-    #[Override]
-    public function messages(): array
-    {
-        return [
-           'email' => 'donnees invalides',
-           'password' => 'informations invalides'
-        ];
-    }
+    
 
     /**
      * Attempt to authenticate the request's credentials.
@@ -57,7 +48,8 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'Adresse email ou mot de passe incorrect.',
+                'password' => 'Adresse email ou mot de passe incorrect.'
             ]);
         }
 

@@ -1,5 +1,6 @@
-<x-guest-layout>
-
+@extends('layouts.guest')
+@section('title', 'Acceuil')
+@section('content')
     <section class="bg-bg py-16 sm:py-20 lg:py-32" id="home">
         <div class="container mx-auto px-4 md:px-8 flex flex-col gap-12 lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div>
@@ -404,4 +405,4 @@
 
         </div>
     </section>
-</x-guest-layout>
+@endsection

@@ -1,4 +1,6 @@
-<x-admin-layout title="Types de vêtements">
+@extends('layouts.admin')
+@section('title', 'Types de vêtements')
+@section('content')
     <div class="flex items-center justify-between">
         <div>
             <h1 class="font-display font-bold text-2xl text-text">Types de vêtements</h1>
@@ -8,6 +10,9 @@
             class="bg-accent text-inverse font-medium text-sm px-5 py-2.5 rounded-full hover:opacity-90 transition">
             + Nouveau type
         </a>
+    </div>
+    <div class="flex items-center jutify-between">
+        <h3> <span class="font-bold"> Total </span>: {{ $count }}</h3>
     </div>
 
     <div class="bg-content rounded-xl border border-muted/10 mt-8 overflow-hidden">
@@ -55,4 +60,4 @@
     </div>
 
     <div class="mt-6">{{ $clothesTypes->links() }}</div>
-</x-admin-layout>
+@endsection

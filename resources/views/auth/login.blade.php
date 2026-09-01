@@ -1,10 +1,12 @@
-<x-guest-layout>
+@extends('layouts.guest')
+@section('title', 'connexion')
+@section('content')
     <div class="w-full max-w-md mx-auto px-4 py-12">
         
         <!-- En-tête du formulaire -->
         <div class="text-center mb-8">
             <h1 class="font-display font-bold text-2xl text-text">Connexion</h1>
-            <p class="text-muted text-sm mt-1">Accédez à votre espace</p>
+            <p class="text-text text-sm mt-1">Accédez à votre espace</p>
         </div>
 
         <!-- Statut de session / Erreurs -->
@@ -17,7 +19,7 @@
             <div>
                 <label for="email" class="block text-sm font-medium text-text mb-1.5">{{ __('Email') }}</label>
                 <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
-                    class="w-full rounded-lg border-muted/20 bg-content text-text focus:border-accent focus:ring-accent text-sm">
+                    class="w-full rounded-lg border-muted/20 bg-bg text-text focus:border-accent focus:ring-accent text-sm">
                 <x-input-error :messages="$errors->get('email')" class="mt-1.5 text-xs text-red-500" />
             </div>
 
@@ -25,7 +27,7 @@
             <div>
                 <label for="password" class="block text-sm font-medium text-text mb-1.5">{{ __('Mot de passe') }}</label>
                 <input id="password" type="password" name="password" required autocomplete="current-password"
-                    class="w-full rounded-lg border-muted/20 bg-content text-text focus:border-accent focus:ring-accent text-sm">
+                    class="w-full rounded-lg border-muted/20 bg-bg text-text focus:border-accent focus:ring-accent text-sm">
                 <x-input-error :messages="$errors->get('password')" class="mt-1.5 text-xs text-red-500" />
             </div>
 
@@ -59,4 +61,4 @@
             @endif
         </form>
     </div>
-</x-guest-layout>
+@endsection

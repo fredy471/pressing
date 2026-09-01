@@ -17,8 +17,9 @@ class ClothesTypeController extends Controller
     public function index(): View
     {
         $clothesTypes = ClothesType::latest()->paginate(10);
+        $count = ClothesType::count();
 
-        return view('admin.clothes-types.index', compact('clothesTypes'));
+        return view('admin.clothes-types.index', compact('clothesTypes', 'count'));
     }
 
     /**
@@ -36,16 +37,16 @@ class ClothesTypeController extends Controller
     {
         ClothesType::create($request->validated());
         return redirect()->route('admin.clothes-types.index')
-            ->with('success', 'Type de vêtement créé avec succès.');
+            ->with('success', 'Type de vêtement créé avec succès. veuillez inserez les montants relative dans la section tarifs');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(ClothesType $clothesType): View
-    {
-        return view('admin.clothes-types.show', compact('clothesType'));
-    }
+    // public function show(ClothesType $clothesType): View
+    // {
+    //     return view('admin.clothes-types.show', compact('clothesType'));
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -77,7 +78,7 @@ class ClothesTypeController extends Controller
         // On adapte le message selon le nouveau statut
         $status = $clothesType->is_active ? 'activé' : 'désactivé';
 
-        return redirect()->route('admin.clothes-types.index')
+        return redirect()->back()
             ->with('success', "Le type de vêtement a été {$status} avec succès.");
     }
 }

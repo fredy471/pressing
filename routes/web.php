@@ -62,9 +62,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::patch('/services/{service}/description', [AdminServiceController::class, 'updateDescription'])
     ->name('services.update-description');
 
-    Route::resource('clothes-types', AdminClothesTypeController::class)->except(['destroy', 'update']);
-    Route::patch('clothes-types/{clothes-type}/toggle-active', [AdminClothesTypeController::class, 'toggleActive'])->name('clothes-types.toggle-active');
-    Route::patch('clothes-types/{clothes-type}/update', [AdminClothesTypeController::class, 'updateCategory'])->name('clothes-types.update-category');
+    Route::resource('clothes-types', AdminClothesTypeController::class)->except(['destroy', 'update', 'show']);
+    Route::patch('clothes-types/{clothesType}/toggle-active', [AdminClothesTypeController::class, 'toggleActive'])->name('clothes-types.toggle-active');
+    Route::patch('clothes-types/{clothesType}/update', [AdminClothesTypeController::class, 'updateCategory'])->name('clothes-types.update-category');
     
     Route::resource('users', AdminUserController::class);
 

@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use Override;
 
@@ -26,9 +25,11 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'phone' =>'required|string|size:10|unique:users,phone|regex:/[0-9]+$/',
+            'phone' => 'required|string|size:10|unique:users,phone|regex:/[0-9]+$/',
             'email' => 'required|string|unique:users,email',
+            'domicile' => ['required_if:role,agent', 'nullable', 'string', 'max:500',],
             'role' => 'required|Rule:in:agent,client',
+            
         ];
     }
 
@@ -38,6 +39,7 @@ class StoreUserRequest extends FormRequest
             'name' => 'le nom de l\'utilisateur est requis',
             'phone' => 'numero de telephone obligatoire',
             'email' => 'email obligatoire',
+            'domicile' => 'vous devez renseignez votre domicile',
             'password' => 'mot de passe obligatoire',
             'role' => 'role obligatoire',
         ];
@@ -50,5 +52,4 @@ class StoreUserRequest extends FormRequest
             'email' => strtolower($this->email),
         ]);
     }
-
 }

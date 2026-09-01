@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable = ['agent_id', 'user_id', 'tracking_code','status', 'delivery_mode', 'total_amount', 'deposit_deadline', 'deposited_at'];
+    protected $fillable = ['agent_id', 'user_id', 'tracking_code', 'status', 'delivery_mode', 'total_amount', 'deposit_deadline', 'deposited_at'];
 
     public function user()
     {
@@ -35,4 +36,19 @@ class Order extends Model
         return $this->hasMany(AppNotification::class);
     }
 
+    protected static function booted(): void
+    {
+        static::creating(function (Order $order) {
+            $order->tracking_code = $order->generateUniqueTrackingCode();
+        });
+    }
+
+    private function generateUniqueTrackingCode(): string
+    {
+        do {
+            $code = 'PRS-' . strtoupper(Str::random(4)) . '-' . strtoupper(Str::random(4));
+        } while (self::where('tracking_code', $code)->exists());
+
+        return $code;
+    }
 }

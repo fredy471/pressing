@@ -1,4 +1,6 @@
-<x-admin-layout title="Tarifs">
+@extends('layouts.admin')
+@section('title', 'Tarifs')
+@section('content')
     <h1 class="font-display font-bold text-2xl text-text">Grille tarifaire</h1>
     <p class="text-muted text-sm mt-1">Un prix par combinaison service × type de vêtement.</p>
 
@@ -50,4 +52,4 @@
             </span>
         </div>
     </form>
-</x-admin-layout>
+@endsection

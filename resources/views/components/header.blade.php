@@ -44,9 +44,7 @@
                 @click="mobileOpen = !mobileOpen"
                 :aria-expanded="mobileOpen.toString()"
                 aria-label="Menu">
-                <span class="h-0.5 w-[22px] bg-text"></span>
-                <span class="h-0.5 w-[22px] bg-text"></span>
-                <span class="h-0.5 w-[22px] bg-text"></span>
+                <i class="fa-solid fa-bars-staggered"></i>
             </button>
         </nav>
 

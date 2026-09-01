@@ -1,4 +1,6 @@
-<x-admin-layout title="Nouveau service">
+@extends('layouts.admin')
+@section('title', 'Nouveau service')
+@section('content')
     <h1 class="font-display font-bold text-2xl text-text">Nouveau service</h1>
 
     <form method="POST" action="{{ route('admin.services.store') }}" class="mt-8 max-w-lg space-y-5">
@@ -25,4 +27,4 @@
             </a>
         </div>
     </form>
-</x-admin-layout>
+@endsection

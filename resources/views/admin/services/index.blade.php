@@ -1,5 +1,7 @@
-<x-admin-layout title="Services">
-    <div class="flex items-center justify-between">
+@extends('layouts.admin')
+@section('title', 'services')
+@section('content')
+<div class="flex items-center justify-between">
         <div>
             <h1 class="font-display font-bold text-2xl text-text">Services</h1>
             <p class="text-muted text-sm mt-1">Gérez les prestations proposées par le pressing.</p>
@@ -74,4 +76,4 @@
     </div>
 
     <div class="mt-6">{{ $services->links() }}</div>
-</x-admin-layout>
+@endsection

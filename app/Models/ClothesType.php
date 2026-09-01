@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ClothesType extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'category'];
+    protected $fillable = ['name', 'category', 'is_active'];
 
 
     public function orderItems()

@@ -7,19 +7,19 @@
         <div>
             <label class="block text-sm font-medium text-text mb-1.5">Nom complet</label>
             <input type="text" name="name" value="{{ old('name') }}" required
-                   class="w-full rounded-lg border-muted/20 bg-content focus:border-accent focus:ring-accent text-sm">
+                class="w-full rounded-lg border-muted/20 bg-content focus:border-accent focus:ring-accent text-sm">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-text mb-1.5">Email</label>
             <input type="email" name="email" value="{{ old('email') }}" required
-                   class="w-full rounded-lg border-muted/20 bg-content focus:border-accent focus:ring-accent text-sm">
+                class="w-full rounded-lg border-muted/20 bg-content focus:border-accent focus:ring-accent text-sm">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-text mb-1.5">Téléphone</label>
             <input type="tel" name="phone" value="{{ old('phone') }}" required
-                   class="w-full rounded-lg border-muted/20 bg-content focus:border-accent focus:ring-accent text-sm">
+                class="w-full rounded-lg border-muted/20 bg-content focus:border-accent focus:ring-accent text-sm">
         </div>
 
         <div>

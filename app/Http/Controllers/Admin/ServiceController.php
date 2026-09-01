@@ -17,9 +17,9 @@ class ServiceController extends Controller
      */
     public function index(): View
     {
-        $service = Service::latest()->paginate(10);
+        $services = Service::latest()->paginate(10);
 
-        return view('admin.services.index', compact('service'));
+        return view('admin.services.index', compact('services'));
     }
 
     /**
@@ -51,9 +51,9 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-   public function update(UpdateServiceRequest $request, Service $service): RedirectResponse
+    // we can only update description
+    public function update(UpdateServiceRequest $request, Service $service): RedirectResponse
     {
-        // On s'assure de ne mettre à jour QUE la description (le prix et le nom restent figés)
         $service->update($request->only('description'));
 
         return redirect()->route('admin.services.index')
@@ -66,7 +66,7 @@ class ServiceController extends Controller
     public function toggleActive(Service $service): RedirectResponse
     {
         $service->update([
-            'is_active' => !$service->is_active 
+            'is_active' => !$service->is_active
         ]);
         $status = $service->is_active ? 'activé' : 'désactivé';
 
