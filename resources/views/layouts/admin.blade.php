@@ -58,6 +58,11 @@
 
             <!-- User profile / Logout section -->
             <div class="p-4 border-t border-muted/10 bg-inverse/[0.01]">
+                <a href="{{ route('profile.edit') }}" title="Mon compte" aria-label="Mon compte"
+                    class="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-muted bg-surface text-sm font-semibold text-text transition duration-200 hover:border-text">
+                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                </a>
+
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-muted hover:text-danger hover:bg-danger/10 transition-all duration-200 group">
@@ -92,15 +97,15 @@
                 </nav>
             </div>
             <div class="p-4 border-t border-muted/15 space-y-1">
-                <a href="{{ route('profile.edit') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted hover:bg-inverse/50 hover:text-text transition">
-                    <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
-                    Mon profil
+                <a href="{{ route('profile.edit') }}" title="Mon compte" aria-label="Mon compte"
+                    class="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-muted bg-surface text-sm font-semibold text-text transition duration-200 hover:border-text">
+                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                 </a>
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="w-full text-left text-sm text-muted hover:text-danger transition px-3 py-2.5">
+                    <button type="submit" class="w-full flex items-center gap-3 text-left text-sm text-muted hover:text-danger transition px-3 py-2.5">
+                        <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
                         Se déconnecter
                     </button>
                 </form>
