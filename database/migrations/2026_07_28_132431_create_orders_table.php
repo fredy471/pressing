@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('agent_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('tracking_code')->unique();
             $table->string('statut')->default('en_attente');
+            $table->string('pickup_phone', 10)->nullable();
+            $table->string('pickup_adress')->nullable();
             $table->string('delivery_mode')->default('collecte_livraison');
             $table->decimal('total_amount', 10, 2)->default('0');
             $table->dateTime('deposit_deadline')->nullable();

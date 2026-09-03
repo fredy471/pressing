@@ -10,19 +10,28 @@ class PageController extends Controller
 {
     public function index() 
     {
-        return view('pages.home');
+        return response()
+            ->view('pages.home')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache');
     }
     public function services()
     {
         // On récupère uniquement les services actifs depuis la base de données
         $services = Service::where('is_active', true)->get();
 
-        return view('pages.services', compact('services'));
+        return response()
+            ->view('pages.services', compact('services'))
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache');
     }
 
     public function contact()
     {
-        return view('pages.contact');
+        return response()
+            ->view('pages.contact')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache');
     }
 }
 

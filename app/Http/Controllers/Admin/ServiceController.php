@@ -18,8 +18,9 @@ class ServiceController extends Controller
     public function index(): View
     {
         $services = Service::latest()->paginate(10);
+        $count = Service::count();
 
-        return view('admin.services.index', compact('services'));
+        return view('admin.services.index', compact('services', 'count'));
     }
 
     /**
@@ -52,7 +53,7 @@ class ServiceController extends Controller
      * Update the specified resource in storage.
      */
     // we can only update description
-    public function update(UpdateServiceRequest $request, Service $service): RedirectResponse
+    public function updateDescription(UpdateServiceRequest $request, Service $service): RedirectResponse
     {
         $service->update($request->only('description'));
 
@@ -71,7 +72,7 @@ class ServiceController extends Controller
         $status = $service->is_active ? 'activé' : 'désactivé';
 
         return redirect()->route('admin.services.index')
-            ->with('success', "Le service a été {$status} avec succès.");
+            ->with('success', "Le service <strong> {$service->name} </strong> a été {$status} avec succès.");
     }
 
     /**

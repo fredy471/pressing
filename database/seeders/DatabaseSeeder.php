@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             "name" => "cololo",
             "email" => "cololo@example.com",
             "phone" => "0188888888",
-            "adresses" => 'cotonou',
+            "domicile" => 'cotonou',
             "password" => Hash::make('12345'),
         ]);
 
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
             "name" => "admin",
             "email" => "admin@example.com",
             "phone" => "0177777777",
-            "adresses" => 'calavi',
+            "domicile" => 'calavi',
             "password" => Hash::make('12345'),
         ]);
 

@@ -3,11 +3,6 @@
 use Illuminate\Support\Facades\Route;
 
 
-// Page d'accueil publique 
-Route::get('/', [App\Http\Controllers\PageController::class, 'index'])->name('home');
-Route::get('/services', [App\Http\Controllers\PageController::class, 'services'])->name('services');
-Route::get('/contact', [App\Http\Controllers\PageController::class, 'contact'])->name('contact');
-
 // Imports pour l'espace Client
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
@@ -23,23 +18,36 @@ use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\ClothesTypeController as AdminClothesTypeController;
 
 
+// ==========================================
+// 0. ROUTES PUBLIQUES
+
+
+// Page d'accueil publique 
+Route::get('/', [App\Http\Controllers\PageController::class, 'index'])->name('home');
+Route::get('/services', [App\Http\Controllers\PageController::class, 'services'])->name('services');
+Route::get('/contact', [App\Http\Controllers\PageController::class, 'contact'])->name('contact');
+
+
+Route::get('/commander', [ClientOrderController::class, 'create'])->name('orders.create');
+Route::get('/commander/{service}/{vetements}', [ClientOrderController::class, 'clothesTypesForService'])->name('orders.clothes-types');
+Route::post('/commander', [ClientOrderController::class, 'store'])->name('orders.store');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ClientProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ClientProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ClientProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+
 
 // ==========================================
 // 1. ESPACE CLIENT
 // ==========================================
+
+
 Route::middleware(['auth', 'role:client'])->prefix('client')->name('client.')->group(function () {
-    Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
-
-    // Gestion du profil
-    Route::get('/profile', [ClientProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ClientProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ClientProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Gestion des commandes
-    Route::get('/orders', [ClientOrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/create', [ClientOrderController::class, 'create'])->name('orders.create');
-    Route::post('/orders', [ClientOrderController::class, 'store'])->name('orders.store');
-    Route::get('/orders/{order}', [ClientOrderController::class, 'show'])->name('orders.show');
+    Route::get('/mes-commandes', [ClientOrderController::class, 'index'])->name('orders.index');
+    Route::get('/commander/{order}', [ClientOrderController::class, 'show'])->name('orders.show');
 });
 
 // ==========================================
@@ -60,12 +68,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('services', AdminServiceController::class)->except(['destroy']);
     Route::patch('services/{service}/toggle-active', [AdminServiceController::class, 'toggleActive'])->name('services.toggle-active');
     Route::patch('/services/{service}/description', [AdminServiceController::class, 'updateDescription'])
-    ->name('services.update-description');
+        ->name('services.update-description');
 
     Route::resource('clothes-types', AdminClothesTypeController::class)->except(['destroy', 'update', 'show']);
     Route::patch('clothes-types/{clothesType}/toggle-active', [AdminClothesTypeController::class, 'toggleActive'])->name('clothes-types.toggle-active');
     Route::patch('clothes-types/{clothesType}/update', [AdminClothesTypeController::class, 'updateCategory'])->name('clothes-types.update-category');
-    
+
     Route::resource('users', AdminUserController::class);
 
     Route::get('/prices', [AdminPriceController::class, 'index'])->name('prices.index');

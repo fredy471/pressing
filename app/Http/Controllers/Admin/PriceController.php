@@ -20,7 +20,12 @@ class PriceController extends Controller
         $prices = ServiceClothesPrice::all()
             ->keyBy(fn($item) => $item->service_id . '_' . $item->clothes_type_id);
 
-        return view('admin.prices.index', compact('services', 'clothesTypes', 'prices'));
+        $totalCombinations = $services->count() * $clothesTypes->count();
+        $missingCount = $totalCombinations - $prices->filter(
+            fn ($price) => filled($price->price)
+        )->count();
+
+        return view('admin.prices.index', compact('services', 'clothesTypes', 'prices', 'missingCount'));
     }
 
     public function update(UpdatePricesRequest $request): RedirectResponse
@@ -28,12 +33,20 @@ class PriceController extends Controller
         $validated = $request->validated();
 
         foreach ($validated['prices'] as $entry) {
+
+            if (empty($entry['price'])) {
+                return back();
+                // return redirect()->route('admin.prices.index');
+            }
+
             ServiceClothesPrice::updateOrCreate(
                 [
                     'service_id' => $entry['service_id'],
                     'clothes_type_id' => $entry['clothes_type_id'],
                 ],
-                ['price' => $entry['price']]
+                [
+                    'price' => $entry['price'],
+                ]
             );
         }
 

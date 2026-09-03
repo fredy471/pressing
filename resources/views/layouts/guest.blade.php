@@ -33,7 +33,7 @@
 
     window.toggleMobileNav = toggleMobileNav;
 </script>
-
+@stack('scripts')
 <body class="flex min-h-screen flex-col font-sans text-gray-900 antialiased bg-bg">
     <x-header />
 

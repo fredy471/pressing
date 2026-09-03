@@ -8,7 +8,7 @@
             <div>
                 <h4 class="mb-3.5 text-[0.78rem] font-semibold uppercase tracking-[0.06em] text-muted">Navigation</h4>
                 <a class="block hover:cursor-pointer py-1 text-base sm:text-lg text-text opacity-85 transition hover:opacity-100 hover:text-accent" href="{{ route('home') }}">Accueil</a>
-                <a class="block hover:cursor-pointer py-1 text-base sm:text-lg text-text opacity-85 transition hover:opacity-100 hover:text-accent" href="{{ route('services') }}">Services</a>
+                <a class="block hover:cursor-pointer py-1 text-base sm:text-lg text-text opacity-85 transition hover:opacity-100 hover:text-accent" href="{{ route('orders.create') }}">Services</a>
                 <a class="block hover:cursor-pointer py-1 text-base sm:text-lg text-text opacity-85 transition hover:opacity-100 hover:text-accent" href="{{ route('contact') }}">Contact</a>
             </div>
             <div>

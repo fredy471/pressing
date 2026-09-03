@@ -26,7 +26,8 @@ class UpdatePricesRequest extends FormRequest
             'prices' => 'required|array',
             'prices.*.service_id' => 'required|exists:services,id',
             'prices.*.clothes_type_id' => 'required|exists:clothes_types,id',
-            'prices.*.price' => 'required|numeric|min:0',
+            'prices.*.price' => 'nullable|numeric|min:1',
         ];
     }
 }
+

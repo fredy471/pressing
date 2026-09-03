@@ -7,8 +7,8 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between pb-6 mb-8 border-b border-muted/10">
         <div>
             <div class="flex items-center gap-2.5">
-                <h1 class="font-display font-bold text-2xl lg:text-3xl text-text tracking-tight">Tableau de bord</h1>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono bg-accent/10 text-accent border border-accent/20">
+                <h1 class="font-display font-bold text-xl md:text-2xl text-text tracking-tight">Tableau de bord</h1>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] md:text-xs font-mono bg-accent/10 text-accent border border-accent/20">
                     Live
                 </span>
             </div>
@@ -18,7 +18,7 @@
 
     <!-- SECTION 1 : ACTIVITÉ DE CE MOIS-CI (KPIs Principaux) -->
     <div class="mb-6">
-        <h2 class="text-xs font-mono uppercase tracking-wider text-muted mb-3 flex items-center gap-2">
+        <h2 class="text-base md:text-lg font-mono uppercase tracking-wider text-muted mb-3 flex items-center gap-2">
             <i class="fa-solid fa-calendar-days text-accent"></i> Activité de ce mois-ci
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -81,7 +81,7 @@
 
     <!-- SECTION 2 : STATISTIQUES GLOBALES -->
     <div class="mb-8">
-        <h2 class="text-xs font-mono uppercase tracking-wider text-muted mb-3 flex items-center gap-2">
+        <h2 class="text-base md:text-lg font-mono uppercase tracking-wider text-muted mb-3 flex items-center gap-2">
             <i class="fa-solid fa-chart-line text-muted"></i> Vue d'ensemble globale
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -139,8 +139,8 @@
             <div>
                 <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h2 class="font-display font-bold text-lg text-text">Dernières commandes</h2>
-                        <p class="text-xs text-muted mt-0.5">Flux d'activité récent enregistré sur la plateforme</p>
+                        <h2 class="font-display font-bold text-base md:text-lg text-text">Dernières commandes</h2>
+                        <p class="text-[11px] md:text-xs text-muted mt-0.5">Flux d'activité récent enregistré sur la plateforme</p>
                     </div>
                     <a href="{{ route('admin.orders.index') }}" class="text-xs font-semibold text-accent hover:underline flex items-center gap-1.5 bg-accent/5 px-3 py-1.5 rounded-lg transition-colors">
                         Tout voir <i class="fa-solid fa-arrow-right text-[10px]"></i>
@@ -195,17 +195,17 @@
             <!-- Répartition par statut -->
             <div class="bg-content rounded-2xl border border-muted/10 p-6 shadow-sm">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="font-display font-bold text-base text-text">Répartition par statut</h2>
+                    <h2 class="font-display font-bold text-base md:text-lg text-text">Répartition par statut</h2>
                     <i class="fa-solid fa-chart-pie text-muted text-sm"></i>
                 </div>
                 <div class="space-y-2.5">
                     @forelse ($ordersByStatus as $statut => $count)
-                        <div class="flex items-center justify-between text-sm p-2 rounded-xl hover:bg-inverse/5 transition-colors">
+                        <div class="flex items-center justify-between text-xs md:text-sm p-2 rounded-xl hover:bg-inverse/5 transition-colors">
                             <x-status-badge :statut="$statut" />
                             <span class="font-mono font-bold text-text bg-inverse/5 px-2.5 py-1 rounded-lg text-xs">{{ $count }}</span>
                         </div>
                     @empty
-                        <div class="text-center py-6 text-muted text-sm">
+                        <div class="text-center py-6 text-muted text-xs md:text-sm">
                             Aucune statistique de statut.
                         </div>
                     @endforelse
@@ -224,8 +224,8 @@
                         </div>
                         <span class="w-2 h-2 rounded-full bg-accent animate-ping"></span>
                     </div>
-                    <p class="text-muted text-xs font-mono">Service plébiscité</p>
-                    <p class="font-display font-bold text-xl text-text mt-1 tracking-tight relative z-10">{{ $topService->service->name }}</p>
+                    <p class="text-muted text-[11px] md:text-xs font-mono">Service plébiscité</p>
+                    <p class="font-display font-bold text-sm md:text-base text-text mt-1 tracking-tight relative z-10">{{ $topService->service->name }}</p>
                     
                     <div class="mt-5 pt-3 border-t border-muted/10 flex items-center justify-between text-xs text-muted font-mono relative z-10">
                         <span>Volumes associés :</span>

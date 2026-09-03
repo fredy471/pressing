@@ -8,7 +8,7 @@
                     Accueil
                 </x-nav-link>
 
-                <x-nav-link :active="request()->routeIs('services')" href="{{ route('services') }}">
+                <x-nav-link :active="request()->routeIs('services')" href="{{ route('orders.create') }}">
                     Services & Tarifs
                 </x-nav-link>
 
@@ -31,7 +31,7 @@
                 @endguest
 
                 @auth
-                <a href="{{ route('client.dashboard') }}" class="inline-flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-sm border border-muted px-5 py-2.5 text-[0.86rem] font-semibold text-text transition duration-200 hover:border-text max-[920px]:hidden">Mon compte</a>
+                <a href="{{ route('profile.edit') }}" class="inline-flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-sm border border-muted px-5 py-2.5 text-[0.86rem] font-semibold text-text transition duration-200 hover:border-text max-[920px]:hidden">Mon compte</a>
                 <form method="POST" action="{{ route('logout') }}" class="inline-block">
                     @csrf
                     <button type="submit" class="inline-flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-sm border border-transparent bg-accent px-5 py-2.5 text-[0.86rem] font-semibold text-inverse transition duration-200 hover:bg-accent2">Déconnexion</button>

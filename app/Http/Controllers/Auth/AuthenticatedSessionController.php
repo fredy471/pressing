@@ -33,11 +33,16 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = Auth::user();
+        $request->session()->put('phone', $user->phone);
+
+        if (session()->has('post_login_redirect')) {
+            return redirect(session()->pull('post_login_redirect'));
+        }
 
         return match (true) {
             $user->hasRole('admin') => redirect()->route('admin.dashboard'),
             $user->hasRole('agent') => redirect()->route('agent.dashboard'),
-            default => redirect()->route('client.dashboard'),
+            default => redirect()->route('home'),
         };
     }
 

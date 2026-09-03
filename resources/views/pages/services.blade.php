@@ -10,7 +10,7 @@
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                 <h3 class="text-lg font-semibold text-slate-800">{{ $service->name }}</h3>
                 <p class="text-sm text-slate-500 mb-4">{{ $service->description }}</p>
-                <span class="text-xl font-bold text-blue-600">{{ number_format($service->price, 0, ',', ' ') }} F / pèce</span>
+                <span class="text-xl font-bold text-blue-600">{{ number_format($service->price, 2, ',', ' ') }} F / pèce</span>
             </div>
             @endforeach
         </div>
@@ -27,7 +27,7 @@
                         <option value="">-- Choisissez un service --</option>
                         @foreach($services as $service)
                         <option value="{{ $service->id }}" data-price="{{ $service->price }}">
-                            {{ $service->name }} ({{ $service->price }} F/pièce)
+                            {{ $service->name }} ({{ number_format($service->price, 2, ',', ' ') }} F/pièce)
                         </option>
                         @endforeach
                     </select>

@@ -51,6 +51,10 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+        
+        if (session()->has('post_login_redirect')) {
+            return redirect(session()->pull('post_login_redirect'));
+        }
 
         return redirect(route('client.dashboard', absolute: false));
     }

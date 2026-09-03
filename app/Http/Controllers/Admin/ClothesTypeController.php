@@ -63,7 +63,7 @@ class ClothesTypeController extends Controller
         $clothesType->update($request->only('category'));
 
         return redirect()->route('admin.clothes-types.index')
-            ->with('success', 'Type de vêtement mis à jour.');
+            ->with('success', "La catégorie du vêtement  <strong> {$clothesType->name} </strong> a été mis à jour.");
     }
 
     /**
@@ -79,6 +79,6 @@ class ClothesTypeController extends Controller
         $status = $clothesType->is_active ? 'activé' : 'désactivé';
 
         return redirect()->back()
-            ->with('success', "Le type de vêtement a été {$status} avec succès.");
+            ->with('success', "Le vêtement <strong> {$clothesType->name} </strong> a été {$status} avec succès.");
     }
 }
