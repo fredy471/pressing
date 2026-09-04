@@ -25,10 +25,8 @@ export default {
             },
         },
         fontFamily: {
-            sans: ['Inter', ...defaultTheme.fontFamily.sans],
+            sans: ['DM Sans', 'sans-serif'],
             display: ['Montserrat', 'sans-serif'],
-            body: ['Inter', 'sans-serif'],
-            mono: ['"Space Mono"', 'monospace'],
         },
     },
 

@@ -16,6 +16,6 @@ $tag = $href ? 'a' : 'button';
 
 <{{ $tag }}
     @if($tag === 'button') type="{{ $type }}" @else href="{{ $href }}" @endif
-    {{ $attributes->merge(['class' => 'inline-flex cursor-pointer items-center gap-2 whitespace-nowrap px-5 py-2.5 text-[0.86rem] transition duration-200 ' . $selectedVariant]) }}>
+    {{ $attributes->merge(['class' => 'inline-flex cursor-pointer items-center gap-2 whitespace-nowrap px-5 py-2.5 text-[0.86rem] font-sans transition duration-200 ' . $selectedVariant]) }}>
     {{ $slot }}
 </{{ $tag }}>

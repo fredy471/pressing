@@ -1,9 +1,10 @@
 
 
 import Alpine from 'alpinejs';
+import orderForm from './alpine/order-form';
 
 window.Alpine = Alpine;
-
+Alpine.data('orderForm', orderForm);
 Alpine.start();
 
 window.toggleMobileNav = () => {

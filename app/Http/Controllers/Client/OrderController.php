@@ -77,7 +77,7 @@ class OrderController extends Controller
                 'delivery_mode' => $validated['delivery_mode'],
                 'statut' => 'en_attente',
                 'pickup_phone' => $validated['pickup_phone'] ?? null,
-                'pickup_adress' => $validated['pickup_adress'] ?? null,
+                'pickup_adress' => $validated['pickup_address'] ?? null,
                 'deposit_deadline' => now()->addDays(7),
                 'total_amount' => 0,
             ]);
@@ -98,6 +98,7 @@ class OrderController extends Controller
                 $total += $subtotal;
 
                 $order->items()->create([
+                    'service_id' => $validated['service_id'],
                     'clothes_type_id' => $item['clothes_type_id'],
                     'quantity' => $item['quantity'],
                     'unit_price' => $unitPrice,
@@ -115,14 +116,14 @@ class OrderController extends Controller
     {
         abort_unless($order->user_id === auth()->id(), 403);
 
-        $order->load(['service', 'items.clothesType', 'payments']);
+        $order->load(['items.service', 'items.clothesType', 'payments']);
 
         return view('client.orders.show', compact('order'));
     }
 
     public function index(): View
     {
-        $orders = auth()->user()->orders()->with('service')->latest()->paginate(10);
+        $orders = auth()->user()->orders()->with('items.service')->latest()->paginate(10);
 
         return view('client.orders.index', compact('orders'));
     }
