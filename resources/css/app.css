@@ -1,6 +1,36 @@
+@import '@fortawesome/fontawesome-free/css/all.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/fonts/dm-sans-v17-latin/dm-sans-v17-latin-regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: url('/fonts/dm-sans-v17-latin/dm-sans-v17-latin-700.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/fonts/montserrat-v31-latin/montserrat-v31-latin-regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 700;
+    src: url('/fonts/montserrat-v31-latin/montserrat-v31-latin-700.woff2') format('woff2');
+}
 
 @layer base {
     :root {
@@ -26,12 +56,11 @@
     }
 }
 
-html{
+html {
     scroll-behavior: smooth;
-    scroll-padding-top:5rem;
+    scroll-padding-top: 5rem;
 }
 
 [x-cloak] {
     display: none !important;
 }
-

@@ -1,4 +1,4 @@
-@extends('layouts.guest')
+@extends('layouts.app')
 @section('title', 'Acceuil')
 @section('content')
     <section class="bg-bg py-16 sm:py-20 lg:py-32" id="home">

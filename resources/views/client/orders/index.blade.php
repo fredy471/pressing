@@ -1,4 +1,4 @@
-@extends('layouts.guest')
+@extends('layouts.app')
 @section('title', 'Mon historique de commandes')
 @section('content')
 
@@ -24,6 +24,45 @@
             <span>Nouvelle commande</span>
         </a>
     </div>
+
+    @if ($latestOrder)
+        <section class="mb-10 rounded-2xl border border-accent/20 bg-accent/5 p-5 sm:p-6" aria-labelledby="latest-order-title">
+            <div class="mb-5 flex items-center justify-between gap-4">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-accent">Votre dernière commande</p>
+                    <h2 id="latest-order-title" class="mt-1 font-display text-xl font-bold text-text">Suivez-la en un coup d’œil</h2>
+                </div>
+                <i class="fa-solid fa-clock-rotate-left text-xl text-accent" aria-hidden="true"></i>
+            </div>
+
+            <div class="grid gap-4 text-sm sm:grid-cols-4">
+                <div>
+                    <span class="block text-xs text-muted">Code de suivi</span>
+                    <strong class="mt-1 block font-mono text-accent">{{ $latestOrder->tracking_code }}</strong>
+                </div>
+                <div>
+                    <span class="block text-xs text-muted">Service</span>
+                    <strong class="mt-1 block text-text">{{ $latestOrder->items->first()?->service?->name ?? 'Service Pressing' }}</strong>
+                </div>
+                <div>
+                    <span class="block text-xs text-muted">Articles</span>
+                    <strong class="mt-1 block text-text">{{ $latestOrder->items->sum('quantity') }} pièce(s)</strong>
+                </div>
+                <div>
+                    <span class="block text-xs text-muted">Statut</span>
+                    <strong class="mt-1 block uppercase text-text">{{ str_replace('_', ' ', $latestOrder->statut ?? 'en_attente') }}</strong>
+                </div>
+            </div>
+
+            <div class="mt-5 flex flex-col items-start justify-between gap-4 border-t border-accent/15 pt-4 sm:flex-row sm:items-center">
+                <strong class="font-display text-lg text-text">{{ number_format($latestOrder->total_amount ?? 0, 0, ',', ' ') }} FCFA</strong>
+                <a href="{{ route('client.orders.show', $latestOrder) }}" class="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-sans font-semibold text-inverse transition hover:opacity-90">
+                    Voir les détails
+                    <i class="fa-solid fa-arrow-right text-xs" aria-hidden="true"></i>
+                </a>
+            </div>
+        </section>
+    @endif
 
     <!-- Grille ou Liste des tickets -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">

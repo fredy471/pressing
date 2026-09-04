@@ -1,4 +1,4 @@
-@extends('layouts.guest')
+@extends('layouts.app')
 @section('title', 'connexion')
 @section('content')
     <div class="w-full max-w-md mx-auto px-4 py-12">

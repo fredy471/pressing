@@ -123,8 +123,10 @@ class OrderController extends Controller
 
     public function index(): View
     {
-        $orders = auth()->user()->orders()->with('items.service')->latest()->paginate(10);
+        $ordersQuery = auth()->user()->orders()->with('items.service');
+        $latestOrder = (clone $ordersQuery)->latest()->first();
+        $orders = $ordersQuery->latest()->paginate(10);
 
-        return view('client.orders.index', compact('orders'));
+        return view('client.orders.index', compact('orders', 'latestOrder'));
     }
 }

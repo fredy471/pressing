@@ -25,8 +25,8 @@ export default {
             },
         },
         fontFamily: {
-            sans: ['DM Sans', 'sans-serif'],
-            display: ['Montserrat', 'sans-serif'],
+            sans: ['DM Sans', 'sans-serif'], //contenu
+            display: ['Montserrat', 'sans-serif'], // titres
         },
     },
 

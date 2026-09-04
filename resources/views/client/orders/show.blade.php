@@ -1,4 +1,4 @@
-@extends('layouts.guest')
+@extends('layouts.app')
 @section('title', 'Commande ' . $order->tracking_code)
 @section('content')
 
@@ -34,8 +34,8 @@
 
         <div class="flex items-center gap-3">
             <a href="{{ route('client.orders.index') }}"
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-muted/20 bg-content text-text text-sm font-medium hover:border-accent/40 transition">
-                <i class="fa-solid fa-arrow-left text-xs"><span>Retour</span></i>
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-muted/20 bg-content text-text text-sm font-sans hover:border-accent/40 transition">
+                <i class="fa-solid fa-arrow-left text-xs"><span> Retour</span></i>
             </a>
         </div>
     </div>

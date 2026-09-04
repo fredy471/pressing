@@ -1,4 +1,4 @@
-@extends('layouts.guest')
+@extends('layouts.app')
 @section('title', 'Mon profil')
 @section('content')
     <x-slot name="header">
