@@ -9,7 +9,7 @@
 <form method="GET" class="flex flex-wrap items-center gap-3 mt-6">
     <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher un code de suivi..."
         class="rounded-xl border-muted/20 bg-content text-text text-sm placeholder:text-xs md:placeholder:text-sm px-4 py-2.5 w-full sm:w-64 focus:border-accent focus:ring-accent shadow-xs">
-    
+
     <select name="status" class="rounded-xl border-muted/20 bg-content text-text text-sm px-4 py-2.5 focus:border-accent focus:ring-accent shadow-xs" onchange="this.form.submit()">
         <option value="">Tous les statuts</option>
         @foreach (['en_attente', 'recue', 'en_lavage', 'terminee', 'livree', 'annulee'] as $status)
@@ -24,12 +24,12 @@
 
 <!-- Conteneur principal minimaliste -->
 <div class="bg-content rounded-2xl border border-muted/10 mt-6 overflow-hidden shadow-sm">
-    
+
     <!-- En-tête du tableau (Desktop) -->
     <div class="hidden lg:grid grid-cols-12 gap-4 px-6 py-3.5 bg-inverse/20 text-muted text-[11px] md:text-xs font-mono font-semibold uppercase tracking-wider border-b border-muted/10">
         <div class="col-span-2">Code</div>
         <div class="col-span-2">Client</div>
-        <div class="col-span-3">Service (nbre art)</div>
+        <div class="col-span-3">Service</div>
         <div class="col-span-2">Statut</div>
         <div class="col-span-2 text-right">Montant</div>
         <div class="col-span-1 text-right">Action</div>
@@ -39,7 +39,7 @@
     <div class="divide-y divide-muted/10">
         @forelse ($orders as $order)
         <div class="p-5 lg:px-6 lg:py-4 flex flex-col lg:grid lg:grid-cols-12 lg:items-center gap-4 hover:bg-inverse/[0.02] transition-colors">
-            
+
             <!-- Code & Statut mobile -->
             <div class="lg:col-span-2 flex items-center justify-between lg:justify-start">
                 <span class="font-mono font-semibold text-text text-sm">{{ $order->tracking_code }}</span>
@@ -57,11 +57,12 @@
             <!-- Service (nbre art) -->
             <div class="lg:col-span-3 text-xs md:text-sm text-text">
                 <span class="lg:hidden text-xs text-muted font-mono uppercase block mb-0.5">Service :</span>
+
                 @if($order->items && $order->items->isNotEmpty())
-                    {{ $order->items->first()->service->name ?? 'N/A' }}
-                    @if($order->items->count() > 1)
-                    <span class="text-xs text-accent font-medium">({{ $order->items->count() }})</span>
-                    @endif
+                {{ $order->items->first()->service->name ?? 'N/A' }}
+                @if($order->items->count() > 1)
+                <span class="text-xs text-accent font-medium">+</span>
+                @endif
                 @else
                 <span class="italic text-muted">Aucun service</span>
                 @endif

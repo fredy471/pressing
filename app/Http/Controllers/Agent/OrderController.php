@@ -3,63 +3,54 @@
 namespace App\Http\Controllers\Agent;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Agent\UpdateOrderStatutRequest;
+use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request): View
     {
-        //
+        $orders = Order::with(['user', 'items'])
+            ->when(! $request->filled('statut'), function ($query) {
+                $query->whereNotIn('statut', ['livree', 'annulee']);
+            })
+            ->when($request->filled('statut'), function ($query) use ($request) {
+                $query->where('statut', $request->statut);
+            })
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $query->where('tracking_code', 'like', '%' . $request->search . '%');
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('agent.orders.index', compact('orders'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show(Order $order): View
     {
-        //
+        $order->load(['user', 'items.service', 'items.clothesType']);
+
+        return view('agent.orders.show', compact('order'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function updateStatut(UpdateOrderStatutRequest $request, Order $order): RedirectResponse
     {
-        //
-    }
+        $newStatus = $request->validated('statut');
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        if (! $order->canTransitionTo($newStatus)) {
+            return back()->with('error', 'Transition de statut non autorisée.');
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        $order->update(['statut' => $newStatus]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        if ($newStatus === 'recue') {
+            $order->update(['deposited_at' => now()]);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return back()->with('success', 'Statut mis à jour : ' . $newStatus);
     }
 }

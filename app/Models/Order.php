@@ -51,4 +51,18 @@ class Order extends Model
 
         return $code;
     }
+
+    public function canTransitionTo(string $newStatus): bool
+    {
+        $allowedTransitions = [
+            'en_attente' => ['recue', 'annulee'],
+            'recue' => ['en_lavage', 'annulee'],
+            'en_lavage' => ['terminee'],
+            'terminee' => ['livree'],
+            'livree' => [],
+            'annulee' => [],
+        ];
+
+        return in_array($newStatus, $allowedTransitions[$this->statut] ?? []);
+    }
 }

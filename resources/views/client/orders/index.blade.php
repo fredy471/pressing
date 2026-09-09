@@ -14,8 +14,8 @@
     <!-- En-tête de la page -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
         <div>
-            <h1 class="font-bold text-3xl text-text">Mes commandes</h1>
-            <p class="text-muted text-sm mt-1.5">Retrouvez l'historique et le suivi de toutes vos prestations de pressing.</p>
+            <h1 class="font-display text-2xl font-bold text-text sm:text-3xl">Mes commandes</h1>
+            <p class="mt-1.5 text-xs text-muted sm:text-sm">Retrouvez l'historique et le suivi de toutes vos prestations de pressing.</p>
         </div>
 
         <a href="{{ route('orders.create') }}" 
@@ -30,7 +30,7 @@
             <div class="mb-5 flex items-center justify-between gap-4">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-wider text-accent">Votre dernière commande</p>
-                    <h2 id="latest-order-title" class="mt-1 font-display text-xl font-bold text-text">Suivez-la en un coup d’œil</h2>
+                    <h2 id="latest-order-title" class="mt-1 font-display text-lg font-bold text-text sm:text-xl">Suivez-la en un coup d’œil</h2>
                 </div>
                 <i class="fa-solid fa-clock-rotate-left text-xl text-accent" aria-hidden="true"></i>
             </div>
@@ -41,8 +41,18 @@
                     <strong class="mt-1 block font-mono text-accent">{{ $latestOrder->tracking_code }}</strong>
                 </div>
                 <div>
-                    <span class="block text-xs text-muted">Service</span>
-                    <strong class="mt-1 block text-text">{{ $latestOrder->items->first()?->service?->name ?? 'Service Pressing' }}</strong>
+                    <span class="block text-xs text-muted mb-1">Services</span>
+                    <div class="flex flex-wrap gap-1">
+                        @forelse($latestOrder->items->unique('service_id') as $item)
+                            @if($item->service)
+                            <span class="text-[10px] font-medium bg-accent/10 text-accent px-2 py-0.5 rounded-md inline-block">
+                                {{ $item->service->name }}
+                            </span>
+                            @endif
+                        @empty
+                            <span class="text-text font-semibold">Service Pressing</span>
+                        @endforelse
+                    </div>
                 </div>
                 <div>
                     <span class="block text-xs text-muted">Articles</span>

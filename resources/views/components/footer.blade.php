@@ -3,7 +3,7 @@
         <div class="grid gap-10 pb-10 mb-10 md:grid-cols-[1.4fr_repeat(3,1fr)] max-[700px]:grid-cols-2">
             <div>
                  <x-pressing-logo />
-                <p class="max-w-[260px] text-base sm:text-lg text-text">Le pressing en ligne pensé pour votre époque — commandez, suivez, recevez.</p>
+                <p class="max-w-[260px] text-base sm:text-lg text-text">Le pressing en ligne pensé pour votre époque <br/> commandez, suivez, recevez.</p>
             </div>
             <div>
                 <h4 class="mb-3.5 text-[0.78rem] font-semibold uppercase tracking-[0.06em] text-muted">Navigation</h4>
@@ -21,7 +21,6 @@
                 <div class="flex flex-wrap gap-2.5 mt-1">
                     <span class="inline-block rounded-sm border border-muted px-2 py-1 text-[0.80em]  font-mono text-muted">Mobile Money</span>
                     <span class="inline-block rounded-sm border border-muted px-2 py-1 text-[0.80em]  font-mono text-muted">Carte</span>
-                    <span class="inline-block rounded-sm border border-muted px-2 py-1 text-[0.80em]  font-mono text-muted">À la livraison</span>
                 </div>
             </div>
         </div>

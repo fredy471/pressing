@@ -11,13 +11,21 @@
         default => 0,
     };
     $steps = ['En attente', 'Reçue', 'En lavage', 'Terminée', 'Livrée'];
+
+    $serviceNames = $order->items->map(fn($item) => $item->service?->name)->filter()->unique();
+    
+    // On prend le premier service et on ajoute "..." s'il y en a plus d'un
+    $firstService = $serviceNames->first() ?? 'Service Pressing';
+    $prestationLabel = $serviceNames->count() > 1 ? $firstService . ' ...' : $firstService;
 @endphp
 
 <div class="relative z-10 flex flex-col justify-between rounded-xl border border-muted/20 bg-content p-0 text-text shadow-[0_30px_60px_-20px_rgba(0,0,0,0.35)]">
     <div class="flex items-start justify-between border-b border-dashed border-muted/30 px-[26px] pb-4 pt-[22px]">
-        <div>
-            <span class="block text-[10px] uppercase tracking-wider text-muted font-mono">Prestation</span>
-            <span class="mt-0.5 block text-base font-bold text-text">{{ $order->items->first()?->service?->name ?? 'Service Pressing' }}</span>
+        <div class="max-w-[70%]">
+            <span class="block text-[10px] uppercase tracking-wider text-muted font-mono">Prestation(s)</span>
+            <span class="mt-0.5 block text-base font-bold text-text truncate" title="{{ $serviceNames->implode(', ') }}">
+                {{ $prestationLabel }}
+            </span>
         </div>
         <div class="text-right font-[family-name:var(--mono)] text-[0.72rem] text-text">
             Code de suivi

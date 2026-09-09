@@ -1,66 +1,107 @@
-export default (services) => ({
-    services: services,
-    serviceId: null,
-    deliveryMode: null,
-    pickupAddress: '',
-    pickupPhone: '',
-    clothesTypes: [],
-    prices: {},
-    quantities: {},
-    loading: false,
+export default function orderForm(services) {
+    return {
+        services: services,
+        openService: services.length > 0 ? services[0].id : null,
+        selections: {},       
+        prices: {},           
+        clothesTypesPerService: {}, 
+        loadingServiceId: null,
 
-    get activeServiceName() {
-        const service = this.services.find(s => s.id === this.serviceId);
-        return service ? service.name : '';
-    },
+        deliveryMode: 'depot_physique',
+        pickupAddress: '',
+        pickupPhone: '',
 
-    async selectService(id) {
-        this.serviceId = id;
-        await this.loadClothesTypes();
-    },
+        init() {
+            if (this.services.length > 0) {
+                this.loadServiceData(this.services[0].id);
+            }
+        },
 
-    async loadClothesTypes() {
-        this.loading = true;
-        this.clothesTypes = [];
-        this.quantities = {};
+        toggleService(serviceId) {
+            this.openService = this.openService === serviceId ? null : serviceId;
+            if (this.openService) {
+                this.loadServiceData(serviceId);
+            }
+        },
 
-        const response = await fetch(`/commander/${this.serviceId}/vetements`);
-        const data = await response.json();
+        async loadServiceData(serviceId) {
+            if (this.clothesTypesPerService[serviceId]) return;
 
-        this.clothesTypes = data.clothes_types;
-        this.prices = data.prices;
+            this.loadingServiceId = serviceId;
+            try {
+                const response = await fetch(`/api/services/${serviceId}/prices`);
+                const data = await response.json();
+                
+                this.clothesTypesPerService[serviceId] = data.clothes_types;
+                
+                if (!this.prices[serviceId]) this.prices[serviceId] = {};
+                Object.entries(data.prices).forEach(([clothesTypeId, price]) => {
+                    this.prices[serviceId][clothesTypeId] = price;
+                });
+            } catch (error) {
+                console.error('Erreur lors du chargement des tarifs', error);
+            } finally {
+                this.loadingServiceId = null;
+            }
+        },
 
-        this.clothesTypes.forEach(type => {
-            this.quantities[type.id] = 0;
-        });
+        getQuantity(serviceId, typeId) {
+            return this.selections[serviceId]?.[typeId] || 0;
+        },
 
-        this.loading = false;
-    },
+        updateQuantity(serviceId, typeId, qty) {
+            if (!this.selections[serviceId]) {
+                this.selections[serviceId] = {};
+            }
+            let parsedQty = parseInt(qty) || 0;
+            if (parsedQty < 0) parsedQty = 0;
 
-    formatPrice(value) {
-        return new Intl.NumberFormat('fr-FR').format(value || 0);
-    },
+            if (parsedQty === 0) {
+                delete this.selections[serviceId][typeId];
+                if (Object.keys(this.selections[serviceId]).length === 0) {
+                    delete this.selections[serviceId];
+                }
+            } else {
+                this.selections[serviceId][typeId] = parsedQty;
+            }
+        },
 
-    get totalPrice() {
-        return Object.entries(this.quantities).reduce((sum, [typeId, qty]) => {
-            return sum + (this.prices[typeId] || 0) * qty;
-        }, 0);
-    },
+        getServiceItemsCount(serviceId) {
+            if (!this.selections[serviceId]) return 0;
+            return Object.values(this.selections[serviceId]).reduce((a, b) => a + b, 0);
+        },
 
-    get totalItems() {
-        return Object.values(this.quantities).reduce((sum, qty) => sum + qty, 0);
-    },
+        get totalItems() {
+            let total = 0;
+            for (let sId in this.selections) {
+                for (let tId in this.selections[sId]) {
+                    total += this.selections[sId][tId];
+                }
+            }
+                return total;
+        },
 
-    get canSubmit() {
-        return this.serviceId
-            && this.deliveryMode
-            && this.totalItems > 0
-            && (this.deliveryMode !== 'collecte_livraison' || this.pickupAddress.trim() !== '');
-    },
+        get totalPrice() {
+            let total = 0;
+            for (let sId in this.selections) {
+                for (let tId in this.selections[sId]) {
+                    let qty = this.selections[sId][tId];
+                    let price = this.prices[sId]?.[tId] || 0;
+                    total += qty * price;
+                }
+            }
+            return total;
+        },
 
-    beforeSubmit(event) {
-        if (!this.canSubmit) {
-            event.preventDefault();
-        }
-    },
-});
+        get canSubmit() {
+            return this.totalItems > 0 && 
+                   (this.deliveryMode !== 'collecte_livraison' || (this.pickupAddress.trim() !== '' && this.pickupPhone.trim() !== ''));
+        },
+
+        formatPrice(value) {
+            return new Intl.NumberFormat('fr-FR').format(value || 0);
+        },
+
+        beforeSubmit() {}
+    }
+}

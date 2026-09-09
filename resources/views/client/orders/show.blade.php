@@ -17,7 +17,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
             <div class="flex items-center gap-3">
-                <h1 class="font-bold text-3xl text-text">Commande {{ $order->tracking_code }}</h1>
+                <h1 class="font-display text-2xl font-bold text-text sm:text-3xl">Commande {{ $order->tracking_code }}</h1>
                 <!-- Badge de statut dynamique -->
                 <span class="text-xs font-semibold px-3 py-1 rounded-full 
                     @switch($order->statut ?? 'en_attente')
@@ -34,8 +34,9 @@
 
         <div class="flex items-center gap-3">
             <a href="{{ route('client.orders.index') }}"
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-muted/20 bg-content text-text text-sm font-sans hover:border-accent/40 transition">
-                <i class="fa-solid fa-arrow-left text-xs"><span> Retour</span></i>
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-muted/10 bg-content text-text text-sm font-medium hover:border-accent/40 hover:text-accent transition-all duration-200 shadow-xs">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                <span>Retour</span>
             </a>
         </div>
     </div>
@@ -51,20 +52,22 @@
                 <div class="px-6 py-4 border-b border-muted/10 bg-inverse/[0.01] flex items-center justify-between">
                     <div class="flex items-center gap-2.5">
                         <span class="w-2 h-2 rounded-full bg-accent"></span>
-                        <h2 class="font-semibold text-base text-text">Articles commandés</h2>
+                        <h2 class="font-semibold text-sm text-text sm:text-base">Articles commandés</h2>
                     </div>
-                    @if($order->items->isNotEmpty() && $order->items->first()->service)
-                    <span class="text-xs font-semibold text-accent bg-accent/10 px-3 py-1 rounded-full">
-                        {{ $order->items->first()->service->name }}
-                    </span>
-                    @endif
                 </div>
 
                 <div class="divide-y divide-muted/10">
                     @forelse($order->items as $item)
                     <div class="flex items-center justify-between px-6 py-4 hover:bg-inverse/[0.01] transition-colors">
                         <div>
-                            <p class="text-sm font-semibold text-text">{{ $item->clothesType->name ?? 'Article' }}</p>
+                            <div class="flex items-center gap-2">
+                                <p class="text-sm font-semibold text-text">{{ $item->clothesType->name ?? 'Article' }}</p>
+                                @if($item->service)
+                                <span class="text-[10px] font-medium bg-accent/10 text-accent px-2 py-0.5 rounded-md flex items-center gap-1">
+                                    <i class="fa-solid fa-tag text-[8px]"></i> {{ $item->service->name }}
+                                </span>
+                                @endif
+                            </div>
                             <p class="text-xs text-muted mt-0.5">Quantité : <span class="font-medium text-text">{{ $item->quantity }}</span> × {{ number_format($item->unit_price, 0, ',', ' ') }} FCFA</p>
                         </div>
                         <div class="text-right">
@@ -82,7 +85,7 @@
 
             <!-- Carte du mode de récupération -->
             <div class="bg-content rounded-2xl border border-muted/10 p-6 shadow-sm">
-                <h2 class="font-semibold text-base text-text mb-4">Informations de récupération</h2>
+                <h2 class="font-semibold text-sm text-text mb-4 sm:text-base">Informations de récupération</h2>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                     <div class="p-4 rounded-xl border border-muted/15 bg-bg">
@@ -110,7 +113,7 @@
         <!-- Colonne de droite : Résumé financier (4 colonnes) -->
         <div class="lg:col-span-4 lg:sticky lg:top-6 space-y-4">
             <div class="bg-content rounded-2xl border border-muted/10 p-6 shadow-sm overflow-hidden">
-                <h2 class="font-semibold text-base text-text pb-4 border-b border-muted/10">Résumé financier</h2>
+                <h2 class="font-semibold text-sm text-text pb-4 border-b border-muted/10 sm:text-base">Résumé financier</h2>
 
                 <div class="py-4 space-y-3 text-sm">
                     <div class="flex justify-between text-muted">

@@ -2,10 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\ProfileController;
+
 
 // Imports pour l'espace Client
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
-use App\Http\Controllers\Client\ProfileController as ClientProfileController;
 use App\Http\Controllers\Client\OrderController as ClientOrderController;
 use App\Http\Controllers\PageController;
 
@@ -15,7 +16,11 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\PriceController as AdminPriceController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
-use App\Http\Controllers\Admin\ClothesTypeController as AdminClothesTypeController;
+
+//imports pour l'espace agent
+use App\Http\Controllers\Agent\DashboardController as AgentDashboardController;
+use App\Http\Controllers\Agent\OrderController as AgentOrderController;
+
 
 
 // ==========================================
@@ -26,17 +31,23 @@ use App\Http\Controllers\Admin\ClothesTypeController as AdminClothesTypeControll
 Route::get('/', [App\Http\Controllers\PageController::class, 'index'])->name('home');
 Route::get('/services', [App\Http\Controllers\PageController::class, 'services'])->name('services');
 Route::get('/contact', [App\Http\Controllers\PageController::class, 'contact'])->name('contact');
+Route::post('/contact', [App\Http\Controllers\Client\ContactController::class, 'StoreMessage'])->name('contact.form');
 
 
 Route::get('/commander', [ClientOrderController::class, 'create'])->name('orders.create');
+Route::get('/api/services/{service}/prices', [ClientOrderController::class, 'clothesTypesForService']);
 Route::get('/commander/{service}/{vetements}', [ClientOrderController::class, 'clothesTypesForService'])->name('orders.clothes-types');
 Route::post('/commander', [ClientOrderController::class, 'store'])->name('orders.store');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ClientProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ClientProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ClientProfileController::class, 'destroy'])->name('profile.destroy');
+Route::middleware('auth')->prefix('profile')->name('profile.')->group(function () {
+    Route::get('/', [ProfileController::class, 'edit'])->name('edit');
+    Route::patch('/', [ProfileController::class, 'update'])->name('update');
+    Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
+    Route::patch('/profile/password', [ProfileController::class,'updatePassword'])->name('password.update');
+
 });
+
+
 
 
 
@@ -54,10 +65,13 @@ Route::middleware(['auth', 'role:client'])->prefix('client')->name('client.')->g
 // 2. ESPACE AGENT
 // ==========================================
 Route::middleware(['auth', 'role:agent'])->prefix('agent')->name('agent.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('agent.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [AgentDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/orders', [AgentOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [AgentOrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order}/status', [AgentOrderController::class, 'updateStatut'])->name('orders.update-statut');
 });
+
+
 
 // ==========================================
 // 3. ESPACE ADMIN

@@ -42,11 +42,11 @@ class OrderController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'service_id' => 'required|exists:services,id',
             'delivery_mode' => 'required|in:collecte_livraison,depot_physique',
             'pickup_address' => 'required_if:delivery_mode,collecte_livraison|nullable|string|max:255',
             'pickup_phone' => 'required_if:delivery_mode,collecte_livraison|nullable|string|max:10',
             'items' => 'required|array|min:1',
+            'items.*.service_id' => 'required|exists:services,id',
             'items.*.clothes_type_id' => 'required|exists:clothes_types,id',
             'items.*.quantity' => 'required|integer|min:1',
         ]);
@@ -62,7 +62,7 @@ class OrderController extends Controller
         $order = $this->createOrderForUser(auth()->user(), $validated);
 
         return redirect()->route('client.orders.show', $order)
-            ->with('success', 'Commande créée avec succès. Code de suivi : ' . $order->tracking_code);
+            ->with('success', 'Commande créée avec succès.');
     }
 
     /**
@@ -73,7 +73,6 @@ class OrderController extends Controller
         return DB::transaction(function () use ($user, $validated) {
             $order = Order::create([
                 'user_id' => $user->id,
-                'service_id' => $validated['service_id'],
                 'delivery_mode' => $validated['delivery_mode'],
                 'statut' => 'en_attente',
                 'pickup_phone' => $validated['pickup_phone'] ?? null,
@@ -85,7 +84,7 @@ class OrderController extends Controller
             $total = 0;
 
             foreach ($validated['items'] as $item) {
-                $unitPrice = ServiceClothesPrice::where('service_id', $validated['service_id'])
+                $unitPrice = ServiceClothesPrice::where('service_id', $item['service_id'])
                     ->where('clothes_type_id', $item['clothes_type_id'])
                     ->value('price');
 
@@ -98,7 +97,7 @@ class OrderController extends Controller
                 $total += $subtotal;
 
                 $order->items()->create([
-                    'service_id' => $validated['service_id'],
+                    'service_id' => $item['service_id'],
                     'clothes_type_id' => $item['clothes_type_id'],
                     'quantity' => $item['quantity'],
                     'unit_price' => $unitPrice,

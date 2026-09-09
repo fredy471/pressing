@@ -14,11 +14,11 @@
                     Services & Tarifs
                 </x-nav-link>
 
-                @auth
+                @if(auth()->check() && auth()->user()->hasRole('client'))
                 <x-nav-link :active="request()->routeIs('client.orders.index')" href="{{ route('client.orders.index') }}">
                     Historique
                 </x-nav-link>
-                @endauth
+                @endif
 
                 <x-nav-link :active="request()->routeIs('contact')" href="{{ route('contact') }}">
                     Contact
@@ -85,11 +85,11 @@
                     Services & Tarifs
                 </x-responsive-nav-link>
 
-                @auth
+                @if(auth()->check() && auth()->user()->hasRole('client'))
                 <x-responsive-nav-link :active="request()->routeIs('client.orders.index')" href="{{ route('client.orders.index') }}" @click="mobileOpen = false">
                     Historique
                 </x-responsive-nav-link>
-                @endauth
+                @endif
 
                 <x-responsive-nav-link :active="request()->routeIs('contact')" href="{{ route('contact') }}" @click="mobileOpen = false">
                     Contact

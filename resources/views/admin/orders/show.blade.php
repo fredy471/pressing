@@ -24,65 +24,88 @@
 
 <!-- Grille Principale -->
 <div class="grid lg:grid-cols-3 gap-6 mt-8">
-    
-    <!-- Colonne de gauche : Articles -->
-    <div class="lg:col-span-2 bg-content rounded-2xl border border-muted/10 shadow-sm overflow-hidden p-6">
-        <h2 class="font-display font-semibold text-text text-base md:text-lg mb-4">Articles commandés</h2>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-xs md:text-sm">
-                <thead>
-                    <tr class="bg-inverse/20 text-muted text-[11px] md:text-xs font-mono font-semibold uppercase tracking-wider border-b border-muted/10">
-                        <th class="text-left py-3.5 px-4 font-semibold">Article</th>
-                        <th class="text-center py-3.5 px-4 font-semibold">Qté</th>
-                        <th class="text-right py-3.5 px-4 font-semibold">Sous-total</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-muted/10">
-                    @foreach ($order->items as $item)
-                    <tr class="hover:bg-inverse/[0.02] transition-colors">
-                        <td class="py-4 px-4 text-text font-medium flex items-center gap-2.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
-                            {{ $item->clothesType->name }}
-                        </td>
-                        <td class="py-4 px-4 text-center font-mono text-xs">
-                            <span class="px-2.5 py-1 rounded-lg bg-accent/10 text-accent font-semibold">{{ $item->quantity }}</span>
-                        </td>
-                        <td class="py-4 px-4 text-right font-mono font-semibold text-text">
-                            {{ number_format($item->subtotal, 0, ',', ' ') }} F
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+    <!-- Colonne de gauche : Articles regroupés par service -->
+    <div class="lg:col-span-2 bg-content rounded-2xl border border-muted/10 shadow-sm overflow-hidden p-6 space-y-6">
+        <h2 class="font-display font-semibold text-text text-base md:text-lg">Articles commandés</h2>
+
+        @php
+            $itemsByService = $order->items->groupBy(fn($item) => $item->service->name ?? 'Autre service');
+        @endphp
+
+        <div class="space-y-6">
+            @foreach ($itemsByService as $serviceName => $items)
+            <div class="border border-muted/15 rounded-xl overflow-hidden bg-bg">
+                <!-- En-tête du service -->
+                <div class="bg-inverse/[0.03] px-4 py-3 border-b border-muted/15 flex items-center justify-between">
+                    <span class="font-semibold text-xs md:text-sm text-text flex items-center gap-2">
+                        <i class="fa-solid fa-tag text-accent text-xs"></i>
+                        {{ $serviceName }}
+                    </span>
+                    <span class="text-[11px] font-mono text-muted">
+                        {{ $items->sum('quantity') }} article(s)
+                    </span>
+                </div>
+
+                <!-- Table des articles pour ce service -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs md:text-sm">
+                        <thead>
+                            <tr class="text-muted text-[10px] md:text-[11px] font-mono font-semibold uppercase tracking-wider border-b border-muted/10">
+                                <th class="text-left py-2.5 px-4 font-semibold">Article</th>
+                                <th class="text-center py-2.5 px-4 font-semibold">Qté</th>
+                                <th class="text-right py-2.5 px-4 font-semibold">Sous-total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-muted/10">
+                            @foreach ($items as $item)
+                            <tr class="hover:bg-inverse/[0.02] transition-colors">
+                                <td class="py-3 px-4 text-text font-medium flex items-center gap-2.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
+                                    {{ $item->clothesType->name }}
+                                </td>
+                                <td class="py-3 px-4 text-center font-mono text-xs">
+                                    <span class="px-2 py-0.5 rounded-md bg-accent/10 text-accent font-semibold">{{ $item->quantity }}</span>
+                                </td>
+                                <td class="py-3 px-4 text-right font-mono font-semibold text-text">
+                                    {{ number_format($item->subtotal, 0, ',', ' ') }} F
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @endforeach
         </div>
 
         <!-- Total de la commande -->
-        <div class="flex items-center justify-between pt-5 mt-4 border-t border-muted/10 font-display">
+        <div class="flex items-center justify-between pt-4 border-t border-muted/10 font-display">
             <span class="text-text font-semibold text-base">Total global</span>
-            <span class="font-mono font-bold text-sm md:text-base text-accent">{{ number_format($order->total_amount, 0, ',', ' ') }} F</span>
+            <span class="font-mono font-bold text-base md:text-lg text-accent">{{ number_format($order->total_amount, 0, ',', ' ') }} F</span>
         </div>
     </div>
 
     <!-- Colonne de droite : Informations Générales -->
     <div class="bg-content rounded-2xl border border-muted/10 shadow-sm p-6 space-y-6">
-        
-        <!-- Service -->
+
+        <!-- Prestations associées -->
         <div>
-            <p class="text-muted text-xs uppercase tracking-wide font-mono">Service principal</p>
-            <div class="text-text font-medium mt-1">
-                @if($order->items && $order->items->isNotEmpty())
-                <span class="inline-flex items-center gap-1.5 text-accent font-semibold">
-                    <i class="fa-solid fa-tag text-xs"></i>
-                    {{ $order->items->first()->service->name ?? 'N/A' }}
+            <p class="text-muted text-xs uppercase tracking-wide font-mono">Prestations incluses</p>
+            <div class="mt-2 flex flex-wrap gap-1.5">
+                @php
+                    $uniqueServices = $order->items->map(fn($item) => $item->service?->name)->filter()->unique();
+                @endphp
+                @forelse($uniqueServices as $serviceName)
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent">
+                    <i class="fa-solid fa-tag text-[10px]"></i>
+                    {{ $serviceName }}
                 </span>
-                @if($order->items->count() > 1)
-                <span class="text-xs text-muted block mt-1"> {{ $order->items->count() }}  article(s)</span>
-                @endif
-                @else
-                <span class="text-muted italic">Aucun service</span>
-                @endif
+                @empty
+                <span class="text-muted italic text-sm">Aucun service</span>
+                @endforelse
             </div>
+            <p class="text-xs text-muted mt-2">Total de pièces : <strong class="text-text font-mono">{{ $order->items->sum('quantity') }}</strong></p>
         </div>
 
         <hr class="border-muted/10">
@@ -104,15 +127,15 @@
                 <span class="font-mono font-bold text-text">
                     {{ number_format($order->payments->amount ?? $order->total_amount, 0, ',', ' ') }} F
                 </span>
-                <!-- <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500">
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500">
                     Payé
-                </span> -->
+                </span>
             </div>
             @else
             <div class="p-3.5 rounded-xl bg-inverse/[0.02] border border-muted/10 flex items-center justify-between text-sm mt-2">
                 <span class="text-muted italic">En attente</span>
-                <span class="px-2.5 py-1 rounded-full text-xs font-semibold  text-amber-500">
-                    ----
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-500">
+                    En attente
                 </span>
             </div>
             @endif

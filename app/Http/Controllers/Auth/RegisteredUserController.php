@@ -32,7 +32,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', "email:rfc,dns", 'unique:' . User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'phone' => ['required', 'string', 'max:10'],
             'domicile' => ['sting', 'max:500'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
@@ -51,11 +51,11 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
-        
+
         if (session()->has('post_login_redirect')) {
             return redirect(session()->pull('post_login_redirect'));
         }
 
-        return redirect(route('client.dashboard', absolute: false));
+        return redirect(route('orders.create', absolute: false));
     }
 }

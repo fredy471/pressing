@@ -1,10 +1,18 @@
+@props(['mobile' => false])
+
 @auth
-<div x-data="{ accountOpen: false }" class="relative font-sans max-[920px]:hidden">
+@php
+    $isAdmin = auth()->user()->hasRole('admin');
+    $dropdownPosition = $mobile
+        ? 'bottom-full left-0 mb-3 w-full'
+        : ($isAdmin ? 'bottom-full right-0 mb-3 w-64' : 'right-0 mt-3 w-64');
+@endphp
+<div x-data="{ accountOpen: false }" @click.outside="accountOpen = false"
+    class="relative z-50 font-sans {{ $mobile ? '' : 'max-[920px]:hidden' }}">
 
     <button
         type="button"
         @click="accountOpen = !accountOpen"
-        @click.outside="accountOpen = false"
         :aria-expanded="accountOpen.toString()"
         aria-haspopup="true"
         class="flex items-center gap-2 rounded-full border border-muted/30 bg-surface p-1 pr-3 transition hover:border-text"
@@ -27,7 +35,7 @@
         x-cloak
         x-show="accountOpen"
         x-transition
-        class="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-muted/15 bg-content shadow-xl"
+        class="absolute z-50 overflow-hidden rounded-2xl border border-muted/15 bg-content shadow-xl {{ $dropdownPosition }}"
     >
 
         <div class="border-b border-muted/10 px-4 py-3">

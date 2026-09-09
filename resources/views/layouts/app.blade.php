@@ -4,8 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Le pressing en ligne pensé pour votre époque
+commandez, suivez, recevez.">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
+
 
     <title>@yield('title', 'Accueil') - {{ config('app.name', 'Presso') }}</title>
 
@@ -34,6 +37,9 @@
     <x-header />
 
     <main class="flex-1">
+            {{-- Flash Notifications --}}
+                <x-flash-message />
+
         @yield('content')
     </main>
 

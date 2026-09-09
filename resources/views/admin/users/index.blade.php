@@ -14,6 +14,16 @@
     </a>
 </div>
 
+<form method="GET" class="mt-6 flex flex-wrap items-center gap-3">
+    <input type="text" name="search" value="{{ request('search') }}"
+        placeholder="Rechercher un nom, email ou téléphone..."
+        class="w-full rounded-xl border-muted/20 bg-content px-4 py-2.5 text-sm text-text shadow-xs placeholder:text-xs focus:border-accent focus:ring-accent sm:w-80 md:placeholder:text-sm">
+
+    <button type="submit" class="rounded-xl bg-accent/10 px-5 py-2.5 text-sm font-medium text-accent transition hover:bg-accent/20">
+        Rechercher
+    </button>
+</form>
+
 <div class="bg-content rounded-xl border border-muted/10 mt-8 overflow-hidden">
     <table class="w-full text-xs md:text-sm">
         <thead class="bg-inverse/40 text-muted text-[11px] md:text-xs font-semibold uppercase tracking-wide">
