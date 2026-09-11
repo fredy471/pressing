@@ -4,7 +4,7 @@
     $status = $order->statut ?? 'en_attente';
     $stepIndex = match ($status) {
         'en_attente' => 0,
-        'recu', 'confirmee' => 1,
+        'recue', 'confirmee' => 1,
         'en_lavage', 'lavage' => 2,
         'terminee', 'prete' => 3,
         'livree' => 4,

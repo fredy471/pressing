@@ -51,7 +51,7 @@ class OrderController extends Controller
             'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        // Pas connecté : on garde la commande en attente, et on redirige vers l'auth
+        // 1. Si non connecté : on stocke en session et on envoie vers le login
         if (! auth()->check()) {
             session(['pending_order' => $validated]);
 
@@ -61,8 +61,8 @@ class OrderController extends Controller
 
         $order = $this->createOrderForUser(auth()->user(), $validated);
 
-        return redirect()->route('client.orders.show', $order)
-            ->with('success', 'Commande créée avec succès.');
+        return redirect()->route('client.payments.initiate', $order)
+            ->with('success', 'Commande enregistrée avec succès. Veuillez procéder au paiement.');
     }
 
     /**

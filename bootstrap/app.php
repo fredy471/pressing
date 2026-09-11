@@ -12,6 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+
+        // Exclude the FedaPay webhook from CSRF protection
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/fedapay',
+        ]);
+
         $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
@@ -19,7 +25,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+
+        // Return JSON responses for API requests
         $exceptions->shouldRenderJsonWhen(
             fn(Request $request) => $request->is('api/*'),
         );
-    })->create();
+    })
+    ->create();

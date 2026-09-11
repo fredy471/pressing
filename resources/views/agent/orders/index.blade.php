@@ -26,6 +26,7 @@
                 <th class="text-left px-6 py-3 font-mono">Code</th>
                 <th class="text-left px-6 py-3 font-mono">Client</th>
                 <th class="text-left px-6 py-3 font-mono">Statut</th>
+                <th class="text-right px-6 py-3 font-mono">Total</th>
                 <th class="text-right px-6 py-3 font-mono">Action</th>
             </tr>
         </thead>
@@ -35,6 +36,9 @@
                 <td class="px-6 py-4 font-mono text-text">{{ $order->tracking_code }}</td>
                 <td class="px-6 py-4 text-text">{{ $order->user->name }}</td>
                 <td class="px-6 py-4"><x-status-badge :statut="$order->statut" /></td>
+                <td class="px-6 py-4 text-right font-mono font-semibold text-text">
+                    {{ number_format($order->total_amount, 0, ',', ' ') }} F
+                </td>
                 <td class="px-6 py-4 text-right">
                     <a href="{{ route('agent.orders.show', $order) }}" class="text-accent text-sm font-medium hover:underline">Traiter</a>
                 </td>
@@ -43,7 +47,6 @@
         </tbody>
     </table>
 </div>
-
 
 <div class="mt-6">{{ $orders->links() }}</div>
 @endsection

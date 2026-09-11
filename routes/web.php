@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Client\OrderController as ClientOrderController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\Client\PaymentController as ClientPaymentController;
 
 //imports pour l'espace admin
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -43,8 +44,7 @@ Route::middleware('auth')->prefix('profile')->name('profile.')->group(function (
     Route::get('/', [ProfileController::class, 'edit'])->name('edit');
     Route::patch('/', [ProfileController::class, 'update'])->name('update');
     Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
-    Route::patch('/profile/password', [ProfileController::class,'updatePassword'])->name('password.update');
-
+    Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('password.update');
 });
 
 
@@ -56,9 +56,13 @@ Route::middleware('auth')->prefix('profile')->name('profile.')->group(function (
 // ==========================================
 
 
+Route::post('/webhooks/fedapay', [ClientPaymentController::class, 'webhook'])->name('webhooks.fedapay');
+Route::get('/commandes/{order}/paiement-callback', [ClientPaymentController::class, 'callback'])->name('client.payments.callback');
+
 Route::middleware(['auth', 'role:client'])->prefix('client')->name('client.')->group(function () {
     Route::get('/mes-commandes', [ClientOrderController::class, 'index'])->name('orders.index');
     Route::get('/commander/{order}', [ClientOrderController::class, 'show'])->name('orders.show');
+    Route::get('/commandes/{order}/payer', [ClientPaymentController::class, 'initiate'])->name('payments.initiate');
 });
 
 // ==========================================
@@ -68,7 +72,7 @@ Route::middleware(['auth', 'role:agent'])->prefix('agent')->name('agent.')->grou
     Route::get('/dashboard', [AgentDashboardController::class, 'index'])->name('dashboard');
     Route::get('/orders', [AgentOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [AgentOrderController::class, 'show'])->name('orders.show');
-    Route::patch('/orders/{order}/status', [AgentOrderController::class, 'updateStatut'])->name('orders.update-statut');
+    Route::patch('/orders/{order}/statut', [AgentOrderController::class, 'updateStatut'])->name('orders.update-statut');
 });
 
 

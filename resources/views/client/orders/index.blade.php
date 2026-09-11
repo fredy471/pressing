@@ -41,18 +41,10 @@
                     <strong class="mt-1 block font-mono text-accent">{{ $latestOrder->tracking_code }}</strong>
                 </div>
                 <div>
-                    <span class="block text-xs text-muted mb-1">Services</span>
-                    <div class="flex flex-wrap gap-1">
-                        @forelse($latestOrder->items->unique('service_id') as $item)
-                            @if($item->service)
-                            <span class="text-[10px] font-medium bg-accent/10 text-accent px-2 py-0.5 rounded-md inline-block">
-                                {{ $item->service->name }}
-                            </span>
-                            @endif
-                        @empty
-                            <span class="text-text font-semibold">Service Pressing</span>
-                        @endforelse
-                    </div>
+                    <span class="block text-xs text-muted">Service</span>
+                    <p class="block mt-1 text-text">
+                    {{ $latestOrder->items->pluck('service.name')->unique()->implode(',') ?? 'service pressing'}}
+                    </p>
                 </div>
                 <div>
                     <span class="block text-xs text-muted">Articles</span>
