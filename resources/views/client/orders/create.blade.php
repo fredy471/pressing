@@ -143,21 +143,23 @@
                         </div>
 
                         <!-- Champs de collecte conditionnels -->
+                        <!-- Champs de collecte conditionnels -->
                         <div x-show="deliveryMode === 'collecte_livraison'" x-cloak
                             x-transition:enter="transition ease-out duration-200"
                             class="mt-4 pt-4 border-t border-muted/10 space-y-4">
                             <div>
                                 <label class="block text-xs uppercase tracking-wider text-muted font-semibold mb-1.5">Adresse de collecte</label>
-                                <input type="text" name="pickup_address" x-model="pickupAddress"
-                                    placeholder="Quartier, rue, point de repère..."
+                                <input type="text" name="pickup_address" x-model="pickup_address"
+                                    x-init="pickup_address = $el.value"
+                                    value="{{ old('pickup_address', session('domicile')) }}"
                                     class="w-full rounded-xl border-muted/20 bg-bg text-text text-sm px-4 py-2.5 focus:border-accent focus:ring-accent shadow-inner"
                                     x-bind:required="deliveryMode === 'collecte_livraison'">
                             </div>
 
                             <div>
                                 <label class="block text-xs uppercase tracking-wider text-muted font-semibold mb-1.5">Numéro de téléphone</label>
-                                <input type="text" name="pickup_phone" x-model="pickupPhone"
-                                    x-init="pickupPhone = $el.value"
+                                <input type="text" name="pickup_phone" x-model="pickup_phone"
+                                    x-init="pickup_phone = $el.value"
                                     value="{{ old('pickup_phone', session('phone')) }}"
                                     class="w-full rounded-xl border-muted/20 bg-bg text-text text-sm px-4 py-2.5 focus:border-accent focus:ring-accent shadow-inner"
                                     x-bind:required="deliveryMode === 'collecte_livraison'">

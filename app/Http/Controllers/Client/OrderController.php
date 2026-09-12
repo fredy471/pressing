@@ -51,14 +51,12 @@ class OrderController extends Controller
             'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        // 1. Si non connecté : on stocke en session et on envoie vers le login
         if (! auth()->check()) {
             session(['pending_order' => $validated]);
 
             return redirect()->route('login')
                 ->with('status', 'Connectez-vous ou créez un compte pour finaliser votre commande.');
         }
-
         $order = $this->createOrderForUser(auth()->user(), $validated);
 
         return redirect()->route('client.payments.initiate', $order)
@@ -76,7 +74,7 @@ class OrderController extends Controller
                 'delivery_mode' => $validated['delivery_mode'],
                 'statut' => 'en_attente',
                 'pickup_phone' => $validated['pickup_phone'] ?? null,
-                'pickup_adress' => $validated['pickup_address'] ?? null,
+                'pickup_address' => $validated['pickup_address'] ?? null,
                 'deposit_deadline' => now()->addDays(7),
                 'total_amount' => 0,
             ]);

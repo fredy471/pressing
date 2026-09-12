@@ -8,8 +8,8 @@ export default function orderForm(services) {
         loadingServiceId: null,
 
         deliveryMode: 'depot_physique',
-        pickupAddress: '',
-        pickupPhone: '',
+        pickup_address: '',
+        pickup_phone: '',
 
         init() {
             if (this.services.length > 0) {
@@ -95,7 +95,7 @@ export default function orderForm(services) {
 
         get canSubmit() {
             return this.totalItems > 0 && 
-                   (this.deliveryMode !== 'collecte_livraison' || (this.pickupAddress.trim() !== '' && this.pickupPhone.trim() !== ''));
+                   (this.deliveryMode !== 'collecte_livraison' || (this.pickup_address.trim() !== '' && this.pickup_phone.trim() !== ''));
         },
 
         formatPrice(value) {

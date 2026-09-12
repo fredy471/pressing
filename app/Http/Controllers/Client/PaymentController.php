@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Payment;
-use App\Services\FedapayService;
-use FedaPay\FedaPay;
-use FedaPay\Transaction;
+use App\Services\FedaPayService;
 use Illuminate\Http\RedirectResponse;
 
 class PaymentController extends Controller
@@ -72,11 +70,6 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Transaction inconnue'], 404);
         }
 
-        $payment->notifications()->create([
-            'raw_payload' => json_decode($payload, true),
-            'statut' => $event->name,
-            'processed' => false,
-        ]);
 
         match ($event->name) {
             'transaction.approved' => $payment->update(['statut' => 'reussi', 'paid_at' => now()]),

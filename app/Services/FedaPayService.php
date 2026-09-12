@@ -31,7 +31,7 @@ class FedapayService
                 'email' => $order->user->email,
                 'phone_number' => [
                     'number' => $order->user->phone,
-                    'country' => 'bj',
+                    'country' => 'BJ',
                 ],
             ],
         ]);

@@ -33,7 +33,10 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = Auth::user();
-        $request->session()->put('phone', $user->phone);
+        $request->session()->put([
+            'phone' => $user->phone,
+            'domicile' => $user->domicile,
+        ]);
 
         if (session()->has('post_login_redirect')) {
             return redirect(session()->pull('post_login_redirect'));
