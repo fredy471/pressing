@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable = ['agent_id', 'user_id', 'tracking_code', 'statut', 'pickup_phone', 'pickup_adress', 'delivery_mode', 'total_amount', 'deposit_deadline', 'deposited_at'];
+    protected $fillable = ['agent_id', 'user_id', 'tracking_code', 'status', 'pickup_phone', 'pickup_adress', 'delivery_mode', 'total_amount', 'deposit_deadline', 'deposited_at'];
 
     public function user()
     {
@@ -63,6 +63,6 @@ class Order extends Model
             'annulee' => [],
         ];
 
-        return in_array($newStatus, $allowedTransitions[$this->statut] ?? []);
+        return in_array($newStatus, $allowedTransitions[$this->status] ?? []);
     }
 }

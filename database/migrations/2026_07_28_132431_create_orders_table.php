@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('agent_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('tracking_code')->unique();
-            $table->string('statut')->default('en_attente');
+            $table->string('status')->default('en_attente');
             $table->string('pickup_phone', 10)->nullable();
             $table->string('pickup_adress')->nullable();
             $table->string('delivery_mode')->default('collecte_livraison');

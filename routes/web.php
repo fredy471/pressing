@@ -6,9 +6,7 @@ use App\Http\Controllers\ProfileController;
 
 
 // Imports pour l'espace Client
-use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Client\OrderController as ClientOrderController;
-use App\Http\Controllers\PageController;
 use App\Http\Controllers\Client\PaymentController as ClientPaymentController;
 
 //imports pour l'espace admin
@@ -17,6 +15,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\PriceController as AdminPriceController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
+use App\Http\Controllers\Admin\ClothesTypeController as AdminClothesTypeController;
 
 //imports pour l'espace agent
 use App\Http\Controllers\Agent\DashboardController as AgentDashboardController;
@@ -55,7 +54,6 @@ Route::middleware('auth')->prefix('profile')->name('profile.')->group(function (
 // 1. ESPACE CLIENT
 // ==========================================
 
-
 Route::post('/webhooks/fedapay', [ClientPaymentController::class, 'webhook'])->name('webhooks.fedapay');
 Route::get('/commandes/{order}/paiement-callback', [ClientPaymentController::class, 'callback'])->name('client.payments.callback');
 
@@ -63,6 +61,7 @@ Route::middleware(['auth', 'role:client'])->prefix('client')->name('client.')->g
     Route::get('/mes-commandes', [ClientOrderController::class, 'index'])->name('orders.index');
     Route::get('/commander/{order}', [ClientOrderController::class, 'show'])->name('orders.show');
     Route::get('/commandes/{order}/payer', [ClientPaymentController::class, 'initiate'])->name('payments.initiate');
+     Route::get('/payments/{reference}/status', [ClientPaymentController::class, 'status'])->name('payments.status');
 });
 
 // ==========================================

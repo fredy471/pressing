@@ -2,10 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Order;
+use App\Models\PendingOrder;
 use FedaPay\FedaPay;
 use FedaPay\Transaction;
-use Illuminate\Support\Facades\Log;
 
 class FedapayService
 {
@@ -18,36 +17,24 @@ class FedapayService
     /**
      * Crée une transaction FedaPay et retourne l'URL de paiement à laquelle rediriger le client.
      */
-    public function initiatePayment(Order $order): string
+    public function initiatePayment(PendingOrder $pendingOrder): string
     {
         $transaction = Transaction::create([
-            'description' => 'Commande ' . $order->tracking_code . ' — Presso',
-            'amount' => (int) $order->total_amount,
+            'description' => 'Commande Presso — Réf. ' . substr($pendingOrder->reference, 0, 8),
+            'amount' => (int) $pendingOrder->total_amount,
             'currency' => ['iso' => 'XOF'],
-            'callback_url' => route('client.payments.callback', $order),
+            'callback_url' => route('client.payments.callback', $pendingOrder->reference),
             'customer' => [
-                'firstname' => $order->user->name,
+                'firstname' => $pendingOrder->user->name,
                 'lastname' => '—',
-                'email' => $order->user->email,
-                'phone_number' => [
-                    'number' => $order->user->phone,
-                    'country' => 'BJ',
-                ],
+                'email' => $pendingOrder->user->email,
+                'phone_number' => ['number' => $pendingOrder->user->phone, 'country' => 'bj'],
             ],
         ]);
-        Log::info('FedaPay paiement lancé', [ 'transaction_id' => $transaction->id, 'order_id' => $order->id,]);
 
-        // register the payment infos before success
-        $order->payments()->create([
-            'amount' => $order->total_amount,
-            'method' => 'mobile_money',
-            'provider' => 'fedapay',
-            'statut' => 'en_attente',
-            'provider_reference' => $transaction->id,
-        ]);
+        $pendingOrder->update(['fedapay_transaction_id' => $transaction->id]);
 
-        $token = $transaction->generateToken();
-
-        return $token->url;
+        return $transaction->generateToken()->url;
     }
+
 }

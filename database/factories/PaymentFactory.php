@@ -29,7 +29,7 @@ class PaymentFactory extends Factory
                 'carte',
             ]),
             'provider' => 'fedapay',
-            'statut' => fake()->randomElement([
+            'status' => fake()->randomElement([
                 'en_attente',
                 'reussi',
                 'echoue',

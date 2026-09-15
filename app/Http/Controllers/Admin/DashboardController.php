@@ -18,7 +18,7 @@ class DashboardController extends Controller
 
         $stats = [
             // Global stats (clés harmonisées avec la vue)
-            'globalRevenue' => Payment::where('statut', 'reussi')->sum('amount'),
+            'globalRevenue' => Payment::where('status', 'reussi')->sum('amount'),
             'total_orders' => Order::count(),
             'total_clients' => User::role('client')->count(),
             'total_agents' => User::role('agent')->count(),
@@ -29,7 +29,7 @@ class DashboardController extends Controller
                 $endOfMonth
             ])->count(),
 
-            'revenue_this_month' => Payment::where('statut', 'reussi')
+            'revenue_this_month' => Payment::where('status', 'reussi')
                 ->whereBetween('created_at', [
                     $startOfMonth,
                     $endOfMonth
@@ -45,9 +45,9 @@ class DashboardController extends Controller
         ];
 
         // Répartitions par statut
-        $ordersByStatus = Order::selectRaw('statut, count(*) as total')
-            ->groupBy('statut')
-            ->pluck('total', 'statut');
+        $ordersByStatus = Order::selectRaw('status, count(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
 
         // Service le plus populaire
         $topService = OrderItem::selectRaw('service_id, count(*) as total')

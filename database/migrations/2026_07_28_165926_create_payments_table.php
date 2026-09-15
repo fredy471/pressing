@@ -18,7 +18,7 @@ return new class extends Migration
             $table->char('currency', 3)->default('XOF');
             $table->enum('method', ['mobile_money','carte']);
             $table->string('provider', 30)->default('fedapay');
-            $table->enum('statut', ['en_attente','reussi','echoue','rembourse',])->default('en_attente');
+            $table->enum('status', ['en_attente','reussi','echoue','rembourse',])->default('en_attente');
             $table->string('provider_reference')->nullable();
             $table->timestamp('paid_at')->nullable();
             $table->timestamps();

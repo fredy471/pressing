@@ -12,8 +12,12 @@ class CreatePendingOrderAfterLogin
         if (! session()->has('pending_order')) {
             return;
         }
+
         $validated = session()->pull('pending_order');
-        $order = app(OrderController::class)->createOrderForUser($event->user, $validated);
-        session(['post_login_redirect' => route('client.orders.show', $order)]);
+
+        $pendingOrder = app(OrderController::class)
+            ->createPendingOrder($event->user, $validated);
+
+        session(['post_login_redirect' => route('client.payments.initiate', $pendingOrder->reference)]);
     }
 }

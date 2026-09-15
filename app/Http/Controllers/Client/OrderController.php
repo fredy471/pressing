@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\ClothesType;
+use Illuminate\Support\Facades\Log;
 use App\Models\Order;
+use App\Models\PendingOrder;
 use App\Models\Service;
 use App\Models\ServiceClothesPrice;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class OrderController extends Controller
@@ -17,7 +18,6 @@ class OrderController extends Controller
     public function create(): View
     {
         $services = Service::where('is_active', true)->get();
-
         return view('client.orders.create', compact('services'));
     }
 
@@ -39,6 +39,7 @@ class OrderController extends Controller
         ]);
     }
 
+
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -53,61 +54,43 @@ class OrderController extends Controller
 
         if (! auth()->check()) {
             session(['pending_order' => $validated]);
-
-            return redirect()->route('login')
-                ->with('status', 'Connectez-vous ou créez un compte pour finaliser votre commande.');
+            return redirect()->route('login')->with('status', 'Connectez-vous pour finaliser votre commande.');
         }
-        $order = $this->createOrderForUser(auth()->user(), $validated);
 
-        return redirect()->route('client.payments.initiate', $order)
-            ->with('success', 'Commande enregistrée avec succès. Veuillez procéder au paiement.');
+        $pendingOrder = $this->createPendingOrder(auth()->user(), $validated);
+        return redirect()->route('client.payments.initiate', $pendingOrder->reference);
     }
+
 
     /**
-     * Logique de création, réutilisée ici et après connexion (voir listener plus bas).
+     * create pendingOrder that will be used to create orders after payment
      */
-    public function createOrderForUser($user, array $validated): Order
+    public function createPendingOrder($user, array $validated): PendingOrder
     {
-        return DB::transaction(function () use ($user, $validated) {
-            $order = Order::create([
-                'user_id' => $user->id,
-                'delivery_mode' => $validated['delivery_mode'],
-                'statut' => 'en_attente',
-                'pickup_phone' => $validated['pickup_phone'] ?? null,
-                'pickup_address' => $validated['pickup_address'] ?? null,
-                'deposit_deadline' => now()->addDays(7),
-                'total_amount' => 0,
-            ]);
+        $total = 0;
 
-            $total = 0;
+        foreach ($validated['items'] as &$item) {
+            $unitPrice = ServiceClothesPrice::where('service_id', $item['service_id'])
+                ->where('clothes_type_id', $item['clothes_type_id'])
+                ->value('price');
 
-            foreach ($validated['items'] as $item) {
-                $unitPrice = ServiceClothesPrice::where('service_id', $item['service_id'])
-                    ->where('clothes_type_id', $item['clothes_type_id'])
-                    ->value('price');
-
-                // Garde-fou : si le prix a disparu entre-temps (désactivé, etc.), on ignore cet item
-                if (! $unitPrice) {
-                    continue;
-                }
-
-                $subtotal = $unitPrice * $item['quantity'];
-                $total += $subtotal;
-
-                $order->items()->create([
-                    'service_id' => $item['service_id'],
-                    'clothes_type_id' => $item['clothes_type_id'],
-                    'quantity' => $item['quantity'],
-                    'unit_price' => $unitPrice,
-                    'subtotal' => $subtotal,
-                ]);
+            if (! $unitPrice) {
+                abort(422, 'Un des articles sélectionnés n\'est plus disponible.');
             }
 
-            $order->update(['total_amount' => $total]);
+            $item['unit_price'] = $unitPrice;
+            $total += $unitPrice * $item['quantity'];
+        }
 
-            return $order;
-        });
+        return PendingOrder::create([
+            'reference' => (string) \Illuminate\Support\Str::uuid(),
+            'user_id' => $user->id,
+            'payload' => $validated,
+            'total_amount' => $total,
+        ]);
     }
+
+
 
     public function show(Order $order): View
     {

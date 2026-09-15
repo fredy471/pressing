@@ -14,11 +14,11 @@ class OrderController extends Controller
     public function index(Request $request): View
     {
         $orders = Order::with(['user', 'items'])
-            ->when(! $request->filled('statut'), function ($query) {
-                $query->whereNotIn('statut', ['livree', 'annulee']);
+            ->when(! $request->filled('status'), function ($query) {
+                $query->whereNotIn('status', ['livree', 'annulee']);
             })
-            ->when($request->filled('statut'), function ($query) use ($request) {
-                $query->where('statut', $request->statut);
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $query->where('status', $request->status);
             })
             ->when($request->filled('search'), function ($query) use ($request) {
                 $query->where('tracking_code', 'like', '%' . $request->search . '%');
@@ -37,20 +37,25 @@ class OrderController extends Controller
         return view('agent.orders.show', compact('order'));
     }
 
-    public function updateStatut(UpdateOrderStatutRequest $request, Order $order): RedirectResponse
-    {
-        $newStatus = $request->validated('statut');
+    public function updateStatus(UpdateOrderStatutRequest $request, Order $order): RedirectResponse
+{
+    $newStatus = $request->validated('status');
 
-        if (! $order->canTransitionTo($newStatus)) {
-            return back()->with('error', 'Transition de statut non autorisée.');
-        }
-
-        $order->update(['statut' => $newStatus]);
-
-        if ($newStatus === 'recue') {
-            $order->update(['deposited_at' => now()]);
-        }
-
-        return back()->with('success', 'Statut mis à jour : ' . $newStatus);
+    if (! $order->canTransitionTo($newStatus)) {
+        return back()->with('error', 'Transition de statut non autorisée.');
     }
+
+    $updates = [
+        'status' => $newStatus,
+        'agent_id' => auth()->id(),
+    ];
+
+    if ($newStatus === 'recue') {
+        $updates['deposited_at'] = now();
+    }
+
+    $order->update($updates);
+
+    return back()->with('success', 'Statut mis à jour : ' . $newStatus);
+}
 }
