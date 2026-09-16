@@ -6,7 +6,7 @@ use App\Models\PendingOrder;
 use FedaPay\FedaPay;
 use FedaPay\Transaction;
 
-class FedapayService
+class FedaPayService
 {
     public function __construct()
     {
