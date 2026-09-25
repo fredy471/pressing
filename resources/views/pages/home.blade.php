@@ -302,7 +302,7 @@
                             <span class="font-display text-2xl font-bold text-[var(--color-accent)]">dès 1500 FCFA</span>
                             <span class="text-xs text-[var(--color-muted)]">/ pièce</span>
                         </div>
-                        <a href="{{ route('services') }} " class="w-full inline-flex items-center justify-center font-[family-name:var(--font-sans)] font-medium text-sm bg-[var(--color-accent)] text-white py-3 px-4 rounded-xl shadow-sm hover:opacity-95 transition-opacity dark:text-[#000]">
+                        <a href="{{ route('orders.create') }}" class="w-full inline-flex items-center justify-center font-[family-name:var(--font-sans)] font-medium text-sm bg-[var(--color-accent)] text-white py-3 px-4 rounded-xl shadow-sm hover:opacity-95 transition-opacity dark:text-[#000]">
                             Commander
                         </a>
                     </div>
@@ -310,7 +310,7 @@
             </div>
 
             <!-- Carte 2 : Repassage -->
-            <x-card-service-type title="Repassage" text="  Repassage vapeur professionnel de haute précision qui préserve la fibre et l'éclat de vos tissus." minimumPrice="700" assets="images/repassage.jpg"/>
+            <x-card-service-type title="Repassage" text="Repassage vapeur professionnel de haute précision qui préserve la fibre et l'éclat de vos tissus." minimumPrice="700" assets="images/repassage.jpg"/>
 
               <!-- Carte 3 : Blanchisserie -->
             <x-card-service-type title="Blanchisserie"  text="Élimination efficace des taches et nettoyage en profondeur de vos vêtements pour leur redonner fraîcheur, propreté et éclat." minimumPrice="1000" assets="images/lavage-repassage.jpg"/>
@@ -339,7 +339,7 @@
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
 
             <!-- Bouton Principal -->
-            <x-button href="#simulateur" class="w-full sm:w-auto justify-center bg-bg text-text hover:bg-bg/90 hover:text-white py-3.5 px-8">
+            <x-button href="{{ route('orders.create') }}" class="w-full sm:w-auto justify-center bg-bg text-text hover:bg-bg/90 hover:text-white py-3.5 px-8">
                 Lancer ma commande
             </x-button>
 

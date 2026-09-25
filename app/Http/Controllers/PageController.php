@@ -21,7 +21,7 @@ class PageController extends Controller
         $services = Service::where('is_active', true)->get();
 
         return response()
-            ->view('pages.services', compact('services'))
+            ->view('pages.service', compact('services'))
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             ->header('Pragma', 'no-cache');
     }
