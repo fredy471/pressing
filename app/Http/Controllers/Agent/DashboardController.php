@@ -11,16 +11,16 @@ class DashboardController extends Controller
     public function index(): View
     {
         $stats = [
-            'en_attente' => Order::where('statut', 'en_attente')->count(),
-            'recue' => Order::where('statut', 'recue')->count(),
-            'en_lavage' => Order::where('statut', 'en_lavage')->count(),
-            'urgentes' => Order::where('statut', 'en_attente')
+            'en_attente' => Order::where('status', 'en_attente')->count(),
+            'recue' => Order::where('status', 'recue')->count(),
+            'en_lavage' => Order::where('status', 'en_lavage')->count(),
+            'urgentes' => Order::where('status', 'en_attente')
                 ->where('deposit_deadline', '<=', now()->addDay())
                 ->count(),
         ];
 
         $recentOrders = Order::with(['user', 'items'])
-            ->whereNotIn('statut', ['livree', 'annulee'])
+            ->whereNotIn('status', ['livree', 'annulee'])
             ->latest()
             ->limit(6)
             ->get();

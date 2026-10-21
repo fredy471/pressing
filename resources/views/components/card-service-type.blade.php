@@ -27,7 +27,11 @@
                 </span>
                 <span class="text-xs text-[var(--color-muted)]">/ pièce</span>
             </div>
+<<<<<<< HEAD
             <a href="{{route('orders.create')}}" class="w-full inline-flex items-center justify-center font-[family-name:var(--font-sans)] font-medium text-sm bg-[var(--color-accent)] text-white py-3 px-4 rounded-xl shadow-sm hover:opacity-95 transition-opacity dark:text-[#000]">
+=======
+            <a href="{{ route('orders.create') }} " class="w-full inline-flex items-center justify-center font-[family-name:var(--font-sans)] font-medium text-sm bg-[var(--color-accent)] text-white py-3 px-4 rounded-xl shadow-sm hover:opacity-95 transition-opacity dark:text-[#000]">
+>>>>>>> develop
                 Commander
             </a>
         </div>

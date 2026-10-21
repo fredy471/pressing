@@ -29,10 +29,8 @@ use App\Http\Controllers\Agent\OrderController as AgentOrderController;
 
 // Page d'accueil publique 
 Route::get('/', [App\Http\Controllers\PageController::class, 'index'])->name('home');
-Route::get('/services', [App\Http\Controllers\PageController::class, 'services'])->name('services');
 Route::get('/contact', [App\Http\Controllers\PageController::class, 'contact'])->name('contact');
 Route::post('/contact', [App\Http\Controllers\Client\ContactController::class, 'StoreMessage'])->name('contact.form');
-
 
 Route::get('/commander', [ClientOrderController::class, 'create'])->name('orders.create');
 Route::get('/api/services/{service}/prices', [ClientOrderController::class, 'clothesTypesForService']);
@@ -51,7 +49,7 @@ Route::middleware('auth')->prefix('profile')->name('profile.')->group(function (
 
 
 // ==========================================
-// 1. ESPACE CLIENT
+// 1. ROUTE CLIENT
 // ==========================================
 
 Route::post('/webhooks/fedapay', [ClientPaymentController::class, 'webhook'])->name('webhooks.fedapay');
@@ -65,13 +63,13 @@ Route::middleware(['auth', 'role:client'])->prefix('client')->name('client.')->g
 });
 
 // ==========================================
-// 2. ESPACE AGENT
+// 2. ROUTE AGENT
 // ==========================================
 Route::middleware(['auth', 'role:agent'])->prefix('agent')->name('agent.')->group(function () {
     Route::get('/dashboard', [AgentDashboardController::class, 'index'])->name('dashboard');
     Route::get('/orders', [AgentOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [AgentOrderController::class, 'show'])->name('orders.show');
-    Route::patch('/orders/{order}/statut', [AgentOrderController::class, 'updateStatut'])->name('orders.update-statut');
+    Route::patch('/orders/{order}/status', [AgentOrderController::class, 'updateStatus'])->name('orders.update-status');
 });
 
 

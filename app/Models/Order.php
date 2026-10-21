@@ -52,7 +52,7 @@ class Order extends Model
         return $code;
     }
 
-    public function canTransitionTo(string $newStatus): bool
+    public function canTransitionTo(string $newStatus): string
     {
         $allowedTransitions = [
             'en_attente' => ['recue', 'annulee'],
