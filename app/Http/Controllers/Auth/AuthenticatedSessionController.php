@@ -41,7 +41,7 @@ class AuthenticatedSessionController extends Controller
         if (session()->has('post_login_redirect')) {
             return redirect(session()->pull('post_login_redirect'));
         }
-
+        
         return match (true) {
             $user->hasRole('admin') => redirect()->route('admin.dashboard'),
             $user->hasRole('agent') => redirect()->route('agent.dashboard'),

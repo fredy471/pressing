@@ -250,7 +250,7 @@
         </div>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-16">
-            <a href="{{ route('services') }}" class="w-full sm:w-auto inline-flex items-center justify-between gap-6 pl-8 pr-2 py-2 rounded-full font-semibold text-inverse bg-[var(--color-accent)] shadow-lg shadow-[var(--color-accent)]/25 hover:opacity-95 transition-all duration-300 group">
+            <a href="{{ route('orders.create') }}" class="w-full sm:w-auto inline-flex items-center justify-between gap-6 pl-8 pr-2 py-2 rounded-full font-semibold text-inverse bg-[var(--color-accent)] shadow-lg shadow-[var(--color-accent)]/25 hover:opacity-95 transition-all duration-300 group">
                 <span>Commencer ma commande</span>
                 <span class="w-10 h-10 rounded-full bg-white text-[var(--color-accent)] flex items-center justify-center transform group-hover:scale-105 transition-transform">
                     <i class="fa fa-arrow-right" aria-hidden="true"></i>
@@ -302,7 +302,7 @@
                             <span class="font-display text-2xl font-bold text-[var(--color-accent)]">dès 1500 FCFA</span>
                             <span class="text-xs text-[var(--color-muted)]">/ pièce</span>
                         </div>
-                        <a href="{{ route('services') }} " class="w-full inline-flex items-center justify-center font-[family-name:var(--font-sans)] font-medium text-sm bg-[var(--color-accent)] text-white py-3 px-4 rounded-xl shadow-sm hover:opacity-95 transition-opacity dark:text-[#000]">
+                        <a href="{{ route('orders.create') }} " class="w-full inline-flex items-center justify-center font-[family-name:var(--font-sans)] font-medium text-sm bg-[var(--color-accent)] text-white py-3 px-4 rounded-xl shadow-sm hover:opacity-95 transition-opacity dark:text-[#000]">
                             Commander
                         </a>
                     </div>

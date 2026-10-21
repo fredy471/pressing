@@ -9,7 +9,7 @@
         <div>
             <div class="flex items-center gap-3">
                 <h1 class="font-display font-bold text-2xl text-text font-mono tracking-tight">{{ $order->tracking_code }}</h1>
-                <x-status-badge :statut="$order->statut" />
+                <x-status-badge :statut="$order->status" />
             </div>
             <p class="text-muted text-sm mt-1">
                 Client : <span class="text-text font-medium">{{ $order->user->name }}</span>
@@ -109,7 +109,7 @@
             'en_lavage' => ['terminee' => 'Marquer comme terminée'],
             'terminee' => ['livree' => 'Marquer comme livrée'],
         ];
-        $currentTransitions = $nextSteps[$order->statut] ?? [];
+        $currentTransitions = $nextSteps[$order->status] ?? [];
         @endphp
 
         @if(empty($currentTransitions))
@@ -117,10 +117,10 @@
         @else
         <div class="flex flex-wrap items-center gap-3">
             @foreach ($currentTransitions as $statusKey => $label)
-            <form method="POST" action="{{ route('agent.orders.update-statut', $order) }}">
+            <form method="POST" action="{{ route('agent.orders.update-status', $order) }}">
                 @csrf
                 @method('PATCH')
-                <input type="hidden" name="statut" value="{{ $statusKey }}">
+                <input type="hidden" name="status" value="{{ $statusKey }}">
 
                 <button type="submit"
                     class="{{ $statusKey === 'annulee' ? 'bg-danger/10 text-danger hover:bg-danger/20 border border-danger/20' : 'bg-accent text-inverse shadow-md shadow-accent/20 hover:opacity-90' }} text-sm font-medium px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">

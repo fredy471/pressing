@@ -12,7 +12,7 @@ class UpdateOrderStatutRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->hasRole('agent');
     }
 
     /**
@@ -23,7 +23,7 @@ class UpdateOrderStatutRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'statut' => 'required|in:en_attente,recue,en_lavage,terminee,livree,annulee',
+            'status' => 'required|in:en_attente,recue,en_lavage,terminee,livree,annulee',
         ];
     }
 }

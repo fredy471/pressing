@@ -2,10 +2,10 @@
 
 @auth
 @php
-    $isAdmin = auth()->user()->hasRole('admin');
-    $dropdownPosition = $mobile
-        ? 'bottom-full left-0 mb-3 w-full'
-        : ($isAdmin ? 'bottom-full right-0 mb-3 w-64' : 'right-0 mt-3 w-64');
+$isAdmin = auth()->user()->hasRole('admin');
+$dropdownPosition = $mobile
+? 'bottom-full left-0 mb-3 w-full'
+: ($isAdmin ? 'bottom-full right-0 mb-3 w-64' : ' bottom-full right-0 mt-3 w-64');
 @endphp
 <div x-data="{ accountOpen: false }" @click.outside="accountOpen = false"
     class="relative z-50 font-sans {{ $mobile ? '' : 'max-[920px]:hidden' }}">
@@ -15,8 +15,7 @@
         @click="accountOpen = !accountOpen"
         :aria-expanded="accountOpen.toString()"
         aria-haspopup="true"
-        class="flex items-center gap-2 rounded-full border border-muted/30 bg-surface p-1 pr-3 transition hover:border-text"
-    >
+        class="flex items-center gap-2 rounded-full border border-muted/30 bg-surface p-1 pr-3 transition hover:border-text">
         <span class="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-xs font-bold text-inverse">
             {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
         </span>
@@ -25,18 +24,12 @@
             {{ auth()->user()->name }}
         </span>
 
-        <i
-            class="fa-solid fa-chevron-down text-[10px] text-muted transition-transform"
-            :class="{ 'rotate-180': accountOpen }"
-        ></i>
+        <i class="fa-solid fa-chevron-down text-[10px] text-muted transition-transform"
+            :class="{ 'rotate-180': accountOpen }"></i>
     </button>
 
-    <div
-        x-cloak
-        x-show="accountOpen"
-        x-transition
-        class="absolute z-50 overflow-hidden rounded-2xl border border-muted/15 bg-content shadow-xl {{ $dropdownPosition }}"
-    >
+    <div x-cloak x-show="accountOpen" x-transition
+        class="absolute z-50 overflow-hidden rounded-2xl border border-muted/15 bg-content shadow-xl {{ $dropdownPosition }}">
 
         <div class="border-b border-muted/10 px-4 py-3">
             <p class="truncate text-sm font-semibold text-text">
@@ -52,20 +45,18 @@
 
             <a
                 href="{{ route('profile.edit') }}"
-                class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-text transition hover:bg-inverse/5"
-            >
+                class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-text transition hover:bg-inverse/5">
                 <i class="fa-regular fa-user w-5 text-center text-muted"></i>
                 <span>Mon profil</span>
             </a>
 
             @if(auth()->user()->hasRole('client'))
-                <a
-                    href="{{ route('client.orders.index') }}"
-                    class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-text transition hover:bg-inverse/5"
-                >
-                    <i class="fa-solid fa-receipt w-5 text-center text-muted"></i>
-                    <span>Mes commandes</span>
-                </a>
+            <a
+                href="{{ route('client.orders.index') }}"
+                class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-text transition hover:bg-inverse/5">
+                <i class="fa-solid fa-receipt w-5 text-center text-muted"></i>
+                <span>Mes commandes</span>
+            </a>
             @endif
 
         </div>
@@ -77,8 +68,7 @@
 
                 <button
                     type="submit"
-                    class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted transition hover:bg-danger/10 hover:text-danger"
-                >
+                    class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted transition hover:bg-danger/10 hover:text-danger">
                     <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
                     <span>Se déconnecter</span>
                 </button>
