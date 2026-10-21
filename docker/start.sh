@@ -1,7 +1,9 @@
+
 #!/bin/sh
 set -e
 
-php artisan migrate --force
+# Préparer le cache de configuration Laravel
 php artisan config:cache
-php artisan route:cache
+
+# Démarrer PHP-FPM et Nginx
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
