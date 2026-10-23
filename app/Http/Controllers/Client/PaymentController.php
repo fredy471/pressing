@@ -15,7 +15,7 @@ use Illuminate\Http\RedirectResponse;
 
 class PaymentController extends Controller
 {
-    public function __construct(private FedapayService $fedapayService,private PendingOrderService $pendingOrderService) {}
+    public function __construct(private FedapayService $fedapayService, private PendingOrderService $pendingOrderService) {}
 
     public function initiate(string $reference): RedirectResponse
     {
@@ -68,6 +68,11 @@ class PaymentController extends Controller
 
         try {
             $event = \FedaPay\Webhook::constructEvent($payload, $sigHeader, config('services.fedapay.webhook_secret'));
+            Log::info('Webhook FedaPay reçu', [
+                'event' => $request->input('name'),
+                'payload' => $request->all(),
+                'signature_present' => $request->hasHeader('X-FEDAPAY-SIGNATURE'),
+            ]);
         } catch (\Exception $e) {
             Log::warning('Webhook FedaPay rejeté', ['error' => $e->getMessage()]);
             return response()->json(['message' => 'Invalide'], 400);

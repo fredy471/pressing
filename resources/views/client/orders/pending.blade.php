@@ -122,7 +122,7 @@
         @endif
 
         <!-- Formulaire de validation finale -->
-        <form method="POST" action="{{ route('client.payments.initiate', $pendingOrder) }}" class="pt-4 border-t border-accent/15 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <form method="POST" action="{{ route('client.payments.initiate', ['reference' => $pendingOrder->reference]) }}" class="pt-4 border-t border-accent/15 flex flex-col sm:flex-row items-center justify-between gap-4">
             @csrf
             <div>
                 <span class="text-xs text-muted block">Prêt à valider ?</span>

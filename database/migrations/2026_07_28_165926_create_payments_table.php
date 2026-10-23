@@ -16,13 +16,13 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->unsignedBigInteger('amount');
             $table->char('currency', 3)->default('XOF');
-            $table->enum('method', ['mobile_money','carte']);
+            $table->enum('method', ['mobile_money', 'carte']);
             $table->string('provider', 30)->default('fedapay');
-            $table->enum('status', ['en_attente','reussi','echoue','rembourse',])->default('en_attente');
+            $table->enum('status', ['en_attente','en_cours','reussi','echoue','annule',])->default('en_attente');
             $table->string('provider_reference')->nullable();
             $table->timestamp('paid_at')->nullable();
             $table->timestamps();
-            $table->unique(['provider','provider_reference']);
+            $table->unique(['provider', 'provider_reference']);
         });
     }
 

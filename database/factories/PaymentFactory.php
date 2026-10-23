@@ -31,9 +31,10 @@ class PaymentFactory extends Factory
             'provider' => 'fedapay',
             'status' => fake()->randomElement([
                 'en_attente',
+                'en_cours',
                 'reussi',
                 'echoue',
-                'rembourse',
+                'annule',
             ]),
             'provider_reference' => 'TEST-' . fake()->unique()->bothify('##########'),
             'paid_at' => null,
