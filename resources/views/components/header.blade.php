@@ -39,9 +39,10 @@
                 @endguest
 
                 @auth
-                <x-action />
+                <div class="max-[920px]:hidden">
+                    <x-action />
+                </div>
                 @endauth
-
                 <button type="button"
                     class="hidden h-10 w-10 cursor-pointer items-center justify-center rounded-xl border-0 bg-inverse/5 text-text max-[920px]:flex"
                     @click="mobileOpen = !mobileOpen"
