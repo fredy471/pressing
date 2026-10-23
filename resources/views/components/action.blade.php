@@ -3,11 +3,11 @@
 @auth
 @php
 $isAdmin = auth()->user()->hasRole('admin');
-// SOLUTION : On utilise 'bottom-full mb-2' pour que le menu s'ouvre VERS LE HAUT
+// SOLUTION : On utilise 'bottom-full mb-2' pour que le menu s'ouvre VERS LE HAUT 
 // et reste bien à l'intérieur de l'écran (puisque le bouton est en bas de la sidebar).
 $dropdownPosition = $mobile
-? 'bottom-full left-0 mb-2 w-full'
-: 'bottom-full right-0 mb-2 w-64';
+    ? 'bottom-full left-0 mb-2 w-full'
+    : 'bottom-full right-0 mb-2 w-64';
 @endphp
 
 <div x-data="{ accountOpen: false }" @click.outside="accountOpen = false"
@@ -19,7 +19,7 @@ $dropdownPosition = $mobile
         :aria-expanded="accountOpen.toString()"
         aria-haspopup="true"
         class="flex items-center justify-between w-full rounded-2xl border border-muted/30 bg-surface p-2 transition hover:border-text cursor-pointer">
-
+        
         <div class="flex items-center gap-2.5 truncate">
             <span class="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-xs font-bold text-inverse shrink-0">
                 {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
@@ -39,7 +39,7 @@ $dropdownPosition = $mobile
             :class="{ 'rotate-180': accountOpen }"></i>
     </button>
 
-    <div x-cloak x-show="accountOpen"
+    <div x-cloak x-show="accountOpen" 
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 scale-95"
         x-transition:enter-end="opacity-100 scale-100"

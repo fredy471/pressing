@@ -108,7 +108,7 @@
                 @endguest
 
                 @auth
-                <div x-data="{ accountOpen: false }" class="relative">
+                <!-- <div x-data="{ accountOpen: false }" class="relative">
                     <button type="button" @click="accountOpen = !accountOpen"
                         :aria-expanded="accountOpen.toString()" aria-haspopup="true"
                         class="flex w-full items-center justify-between gap-3 rounded-xl border border-muted/30 bg-surface p-2 text-left transition hover:border-text">
@@ -138,7 +138,8 @@
                             </button>
                         </form>
                     </div>
-                </div>
+                </div> -->
+                <x-action :mobile="true" />
                 @endauth
             </div>
         </aside>
