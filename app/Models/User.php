@@ -39,14 +39,11 @@ class User extends Authenticatable
 
     public function creator()
     {
-        return $this->belongsTo( User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function createdUsers()
     {
         return $this->hasMany(User::class, 'created_by');
     }
-
 }
-
-?>

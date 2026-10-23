@@ -1,7 +1,18 @@
 
 
 import Alpine from 'alpinejs';
-import orderForm from './alpine/order-form';
+import orderForm from './alpine/order-form.js';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+
+document.addEventListener('DOMContentLoaded', () => {
+    AOS.init({
+        duration: 1000,
+        once: false,
+        offset: 100,
+        easing: 'ease-in-out',
+    });
+});
 
 window.Alpine = Alpine;
 Alpine.data('orderForm', orderForm);

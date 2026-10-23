@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Agent;
 
 use App\Http\Controllers\Controller;
+use App\Enums\OrderStatus;
 use App\Http\Requests\Agent\UpdateOrderStatutRequest;
 use App\Models\Order;
 use Illuminate\Http\Request;
@@ -80,13 +81,15 @@ class OrderController extends Controller
         return view('agent.orders.show', compact('order'));
     }
 
-    public function updateStatus(UpdateOrderStatutRequest $request, Order $order): RedirectResponse
-    {
-        $newStatus = $request->validated('status');
+    public function updateStatus(
+        UpdateOrderStatutRequest $request,
+        Order $order
+    ): RedirectResponse {
+        $data = $request->validated();
 
+        $newStatus = OrderStatus::from($data['status']);
 
-
-        if (! $order->canTransitionTo($newStatus)) {
+        if (! $order->status->canTransitionTo($newStatus)) {
             return back()->with('error', 'Transition de statut non autorisée.');
         }
 
@@ -95,12 +98,15 @@ class OrderController extends Controller
             'agent_id' => auth()->id(),
         ];
 
-        if ($newStatus === 'recue') {
+        if ($newStatus === OrderStatus::RECUE) {
             $updates['deposited_at'] = now();
         }
 
         $order->update($updates);
 
-        return back()->with('success', 'Statut mis à jour : ' . $newStatus);
+        return back()->with(
+            'success',
+            'Statut mis à jour : ' . $newStatus->label()
+        );
     }
 }

@@ -56,6 +56,6 @@ class RegisteredUserController extends Controller
             return redirect(session()->pull('post_login_redirect'));
         }
 
-        return redirect(route('orders.create', absolute: false));
+        return redirect(route('client.orders.create', absolute: false));
     }
 }

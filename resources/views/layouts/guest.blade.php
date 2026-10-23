@@ -9,6 +9,10 @@
 
     <title>@yield('title', 'Accueil') - {{ config('app.name', 'Presso') }}</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -29,11 +33,12 @@
     window.toggleMobileNav = toggleMobileNav;
 </script>
 @stack('scripts')
+
 <body class="flex min-h-screen flex-col font-sans text-gray-900 antialiased bg-bg">
     <x-header />
 
     <main class="flex-1">
-         @yield('content')
+        @yield('content')
     </main>
 
     <x-footer />

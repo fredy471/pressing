@@ -22,7 +22,7 @@ class PaymentFactory extends Factory
         $order = Order::inRandomOrder()->first();
         return [
             'order_id' => $order->id,
-            'amount' => $order->total_amount,
+            'amount' => (int) round($order->total_amount),
             'currency' => 'XOF',
             'method' => fake()->randomElement([
                 'mobile_money',

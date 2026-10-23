@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('fedapay_transaction_id')->nullable();
             $table->enum('status', ['en_attente', 'recue', 'en_lavage', 'terminee', 'livree', 'annulee'])->default('en_attente');
             $table->foreignId('order_id')->nullable()->constrained()->onDelete('set null');
+            $table->unique('user_id');
             $table->timestamps();
         });
     }

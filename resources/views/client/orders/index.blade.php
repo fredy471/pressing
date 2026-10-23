@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="max-w-4xl mx-auto px-6 py-12">
-    
+
     <!-- Fil d'Ariane -->
     <nav class="flex items-center gap-2 text-xs text-muted mb-6">
         <a href="/" class="hover:text-text transition-colors">Accueil</a>
@@ -18,7 +18,7 @@
             <p class="mt-1.5 text-xs text-muted sm:text-sm">Retrouvez l'historique et le suivi de toutes vos prestations de pressing.</p>
         </div>
 
-        <a href="{{ route('orders.create') }}" 
+        <a href="{{ route('client.orders.create') }}"
            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-inverse font-medium text-sm hover:opacity-95 transition shadow-sm">
             <i class="fa-solid fa-plus text-xs"></i>
             <span>Nouvelle commande</span>
@@ -81,7 +81,7 @@
                 <p class="text-xs text-muted mt-1">Vous n'avez pas encore passé de commande de pressing chez nous.</p>
             </div>
             <div class="pt-2">
-                <a href="{{ route('orders.create') }}" 
+                <a href="{{ route('client.orders.create') }}"
                    class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-inverse font-medium text-sm hover:opacity-95 transition shadow-sm">
                     Lancer ma première commande
                 </a>

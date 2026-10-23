@@ -5,11 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Enums\OrderStatus;
 
 class Order extends Model
 {
     use HasFactory;
     protected $fillable = ['agent_id', 'user_id', 'tracking_code', 'status', 'pickup_phone', 'pickup_adress', 'delivery_mode', 'total_amount', 'deposit_deadline', 'deposited_at'];
+
+    protected function casts(): array
+    {
+        return [
+            'status' => OrderStatus::class,
+            'deposit_deadline' => 'datetime',
+        ];
+    }
 
     public function user()
     {

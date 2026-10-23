@@ -10,11 +10,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use App\Services\FedaPayService;
+use App\Services\PendingOrderService;
 use Illuminate\Http\RedirectResponse;
 
 class PaymentController extends Controller
 {
-    public function __construct(private FedapayService $fedapayService) {}
+    public function __construct(private FedapayService $fedapayService,private PendingOrderService $pendingOrderService) {}
 
     public function initiate(string $reference): RedirectResponse
     {
@@ -23,8 +24,12 @@ class PaymentController extends Controller
             ->where('status', 'en_attente')
             ->firstOrFail();
 
-        $paymentUrl = $this->fedapayService->initiatePayment($pendingOrder);
-        return redirect($paymentUrl);
+        // Le montant est figé dès que la transaction FedaPay existe : on recalcule avant.
+        if (! $pendingOrder->fedapay_transaction_id) {
+            $pendingOrder = $this->pendingOrderService->reprice($pendingOrder);
+        }
+
+        return redirect($this->fedapayService->initiatePayment($pendingOrder));
     }
 
     /**
@@ -32,7 +37,9 @@ class PaymentController extends Controller
      */
     public function callback(string $reference): View
     {
-        $pendingOrder = PendingOrder::where('reference', $reference)->firstOrFail();
+        $pendingOrder = PendingOrder::where('reference', $reference)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
 
         return view('client.payments.callback', compact('pendingOrder'));
     }
@@ -42,7 +49,9 @@ class PaymentController extends Controller
      */
     public function status(string $reference)
     {
-        $pendingOrder = PendingOrder::where('reference', $reference)->firstOrFail();
+        $pendingOrder = PendingOrder::where('reference', $reference)
+            ->where('user_id', auth()->id())      // le polling est réservé au propriétaire
+            ->firstOrFail();
 
         return response()->json([
             'status' => $pendingOrder->status,
@@ -54,7 +63,7 @@ class PaymentController extends Controller
 
     public function webhook(Request $request)
     {
-        $payload = $request->getContent();
+        $payload   = $request->getContent();
         $sigHeader = $request->header('X-FEDAPAY-SIGNATURE');
 
         try {
@@ -65,16 +74,32 @@ class PaymentController extends Controller
         }
 
         $transactionId = $event->object->id ?? null;
-        $pendingOrder = PendingOrder::where('fedapay_transaction_id', $transactionId)->first();
-
-        if (! $pendingOrder || $pendingOrder->status !== 'en_attente') {
-            return response()->json(['message' => 'Déjà traité ou introuvable'], 200);
+        if (! $transactionId) {
+            return response()->json(['message' => 'Ignoré'], 200);
         }
 
-        if ($event->name === 'transaction.approved') {
-            DB::transaction(function () use ($pendingOrder) {
-                $order = $this->materializeOrder($pendingOrder);
+        DB::transaction(function () use ($event, $transactionId) {
+            // Verrou : deux livraisons simultanées du même webhook ne créent qu'une commande.
+            $pendingOrder = PendingOrder::where('fedapay_transaction_id', $transactionId)
+                ->lockForUpdate()
+                ->first();
 
+            if (! $pendingOrder || $pendingOrder->status !== 'en_attente') {
+                return; // inconnu, ou déjà traité (relivraison)
+            }
+
+            if ($event->name === 'transaction.approved') {
+                $paid = $event->object->amount ?? null;
+                if ($paid !== null && (int) $paid !== (int) $pendingOrder->total_amount) {
+                    Log::error('Montant FedaPay différent du montant attendu', [
+                        'pending' => $pendingOrder->id,
+                        'attendu' => $pendingOrder->total_amount,
+                        'recu' => $paid,
+                    ]);
+                    return; // à rapprocher manuellement
+                }
+
+                $order = $this->materializeOrder($pendingOrder);
                 $order->payments()->create([
                     'amount' => $pendingOrder->total_amount,
                     'method' => 'mobile_money',
@@ -83,12 +108,11 @@ class PaymentController extends Controller
                     'provider_reference' => $pendingOrder->fedapay_transaction_id,
                     'paid_at' => now(),
                 ]);
-
                 $pendingOrder->update(['status' => 'confirmed', 'order_id' => $order->id]);
-            });
-        } elseif ($event->name === 'transaction.canceled') {
-            $pendingOrder->update(['status' => 'annulee']);
-        }
+            } elseif ($event->name === 'transaction.canceled') {
+                $pendingOrder->update(['status' => 'annulee']);
+            }
+        });
 
         return response()->json(['message' => 'OK']);
     }
