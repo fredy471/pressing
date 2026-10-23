@@ -9,7 +9,7 @@
         <div>
             <div class="flex items-center gap-3">
                 <h1 class="font-display font-bold text-2xl text-text font-mono tracking-tight">{{ $order->tracking_code }}</h1>
-                <x-status-badge :statut="$order->status" />
+                <x-status-badge :status="$order->status" />
             </div>
             <p class="text-muted text-sm mt-1">
                 Client : <span class="text-text font-medium">{{ $order->user->name }}</span>
@@ -34,7 +34,7 @@
         <div class="md:col-span-2 bg-content rounded-2xl border border-muted/10 p-6 shadow-xs flex flex-col justify-between">
             <div>
                 <h3 class="text-xs font-mono uppercase tracking-wider text-muted/70 font-semibold mb-4">Articles commandés</h3>
-                
+
                 <div class="divide-y divide-muted/15">
                     @foreach ($order->items as $item)
                     <div class="py-3.5 first:pt-0 last:pb-0 flex items-center justify-between gap-4">
@@ -103,41 +103,40 @@
         <h3 class="text-xs font-mono uppercase tracking-wider text-muted/70 font-semibold mb-4">Actions disponibles</h3>
 
         @php
-        $nextSteps = [
-            'en_attente' => ['recue' => 'Marquer comme reçue', 'annulee' => 'Annuler'],
-            'recue' => ['en_lavage' => 'Démarrer le lavage', 'annulee' => 'Annuler'],
-            'en_lavage' => ['terminee' => 'Marquer comme terminée'],
-            'terminee' => ['livree' => 'Marquer comme livrée'],
-        ];
-        $currentTransitions = $nextSteps[$order->status] ?? [];
+        $currentTransitions = $order->status->nextStatuses();
         @endphp
 
-        @if(empty($currentTransitions))
-        <p class="text-sm text-muted italic">Aucune action disponible pour le moment (Commande finalisée ou annulée).</p>
+        @if (empty($currentTransitions))
+        <p class="text-sm text-muted italic">
+            Aucune action disponible pour le moment
+            (Commande finalisée ou annulée).
+        </p>
         @else
         <div class="flex flex-wrap items-center gap-3">
-            @foreach ($currentTransitions as $statusKey => $label)
-            <form method="POST" action="{{ route('agent.orders.update-status', $order) }}">
+            @foreach ($currentTransitions as $nextStatus)
+            <form method="POST"
+                action="{{ route('agent.orders.update-status', $order) }}">
                 @csrf
                 @method('PATCH')
-                <input type="hidden" name="status" value="{{ $statusKey }}">
 
-                <button type="submit"
-                    class="{{ $statusKey === 'annulee' ? 'bg-danger/10 text-danger hover:bg-danger/20 border border-danger/20' : 'bg-accent text-inverse shadow-md shadow-accent/20 hover:opacity-90' }} text-sm font-medium px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
-                    @if($statusKey === 'annulee')
-                    <i class="fa-solid fa-ban text-xs"></i>
-                    @elseif($statusKey === 'livree')
-                    <i class="fa-solid fa-check-double text-xs"></i>
-                    @else
-                    <i class="fa-solid fa-arrow-right text-xs"></i>
-                    @endif
-                    <span>{{ $label }}</span>
+                <input
+                    type="hidden"
+                    name="status"
+                    value="{{ $nextStatus->value }}">
+
+                <button
+                    type="submit"
+                    class="{{ $nextStatus === \App\Enums\OrderStatus::ANNULEE
+                        ? 'bg-danger/10 text-danger hover:bg-danger/20 border border-danger/20'
+                        : 'bg-accent text-inverse shadow-md shadow-accent/20 hover:opacity-90' }}
+                        text-sm font-medium px-5 py-2.5 rounded-xl
+                        transition-all duration-200 flex items-center gap-2">
+                    {{ $nextStatus->actionLabel() }}
                 </button>
             </form>
             @endforeach
         </div>
         @endif
     </div>
-
 </div>
 @endsection

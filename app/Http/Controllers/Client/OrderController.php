@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreOrderRequest;
 use App\Models\ClothesType;
-use Illuminate\Support\Facades\Log;
 use App\Models\Order;
-use App\Models\PendingOrder;
 use App\Models\Service;
 use App\Models\ServiceClothesPrice;
-use Illuminate\Http\Request;
+use App\Services\PendingOrderService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use App\Models\PendingOrder;
 
 class OrderController extends Controller
 {
@@ -21,9 +21,6 @@ class OrderController extends Controller
         return view('client.orders.create', compact('services'));
     }
 
-    /**
-     * Récupère, pour un service donné, les vêtements réellement tarifés.
-     */
     public function clothesTypesForService(Service $service)
     {
         $clothesTypes = ClothesType::where('is_active', true)
@@ -33,71 +30,64 @@ class OrderController extends Controller
         $prices = ServiceClothesPrice::where('service_id', $service->id)
             ->pluck('price', 'clothes_type_id');
 
-        return response()->json([
-            'clothes_types' => $clothesTypes,
-            'prices' => $prices,
-        ]);
+        return response()->json(['clothes_types' => $clothesTypes, 'prices' => $prices]);
     }
 
-
-    public function store(Request $request): RedirectResponse
+    public function store(StoreOrderRequest $request, PendingOrderService $pending): RedirectResponse
     {
-        $validated = $request->validate([
-            'delivery_mode' => 'required|in:collecte_livraison,depot_physique',
-            'pickup_address' => 'required_if:delivery_mode,collecte_livraison|nullable|string|max:255',
-            'pickup_phone' => 'required_if:delivery_mode,collecte_livraison|nullable|string|max:10',
-            'items' => 'required|array|min:1',
-            'items.*.service_id' => 'required|exists:services,id',
-            'items.*.clothes_type_id' => 'required|exists:clothes_types,id',
-            'items.*.quantity' => 'required|integer|min:1',
-        ]);
+        $data = $request->validated();
 
         if (! auth()->check()) {
-            session(['pending_order' => $validated]);
+            session([
+                'pending_order'       => $data,
+                'post_login_redirect' => route('client.orders.resume'),
+            ]);
             return redirect()->route('login')->with('status', 'Connectez-vous pour finaliser votre commande.');
         }
 
-        $pendingOrder = $this->createPendingOrder(auth()->user(), $validated);
-        return redirect()->route('client.payments.initiate', $pendingOrder->reference);
+        $pending->createFor(auth()->user(), $data);
+        return redirect()->route('client.orders.pending');
     }
 
-
-    /**
-     * create pendingOrder that will be used to create orders after payment
-     */
-    public function createPendingOrder($user, array $validated): PendingOrder
+    public function resume(PendingOrderService $pending): RedirectResponse
     {
-        $total = 0;
+        if ($data = session()->pull('pending_order')) {
+            $pending->createFor(auth()->user(), $data);
+            // On indique que cette commande vient d'une session restaurée
+            session()->flash('session_restored', true);
+        }
+        return redirect()->route('client.orders.pending');
+    }
 
-        foreach ($validated['items'] as &$item) {
-            $unitPrice = ServiceClothesPrice::where('service_id', $item['service_id'])
-                ->where('clothes_type_id', $item['clothes_type_id'])
-                ->value('price');
+    public function pending(): View
+    {
+        $pendingOrder = PendingOrder::where('user_id', auth()->id())
+            ->where('status', 'en_attente')
+            ->latest('id')
+            ->first();
 
-            if (! $unitPrice) {
-                abort(422, 'Un des articles sélectionnés n\'est plus disponible.');
-            }
+        $lines = collect();
+        if ($pendingOrder) {
+            $items    = collect($pendingOrder->payload['items']);
+            $services = Service::whereIn('id', $items->pluck('service_id'))->pluck('name', 'id');
+            $clothes  = ClothesType::whereIn('id', $items->pluck('clothes_type_id'))->pluck('name', 'id');
 
-            $item['unit_price'] = $unitPrice;
-            $total += $unitPrice * $item['quantity'];
+            $lines = $items->map(fn($i) => [
+                'service'  => $services[$i['service_id']] ?? '—',
+                'clothes'  => $clothes[$i['clothes_type_id']] ?? '—',
+                'quantity' => $i['quantity'],
+                'subtotal' => $i['unit_price'] * $i['quantity'],
+            ]);
         }
 
-        return PendingOrder::create([
-            'reference' => (string) \Illuminate\Support\Str::uuid(),
-            'user_id' => $user->id,
-            'payload' => $validated,
-            'total_amount' => $total,
-        ]);
+        return view('client.orders.pending', compact('pendingOrder', 'lines'));
     }
-
 
 
     public function show(Order $order): View
     {
         abort_unless($order->user_id === auth()->id(), 403);
-
         $order->load(['items.service', 'items.clothesType', 'payments']);
-
         return view('client.orders.show', compact('order'));
     }
 

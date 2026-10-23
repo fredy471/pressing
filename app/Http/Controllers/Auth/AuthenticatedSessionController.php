@@ -45,7 +45,7 @@ class AuthenticatedSessionController extends Controller
         return match (true) {
             $user->hasRole('admin') => redirect()->route('admin.dashboard'),
             $user->hasRole('agent') => redirect()->route('agent.dashboard'),
-            default => redirect()->route('client.orders.index'),
+            default => redirect()->route('client.orders.create'),
         };
     }
 

@@ -4,6 +4,8 @@ namespace App\Http\Requests\Agent;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Enums\OrderStatus;
+use Illuminate\Validation\Rule;
 
 class UpdateOrderStatutRequest extends FormRequest
 {
@@ -23,7 +25,10 @@ class UpdateOrderStatutRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => 'required|in:en_attente,recue,en_lavage,terminee,livree,annulee',
+            'status' => [
+                'required',
+                Rule::enum(OrderStatus::class),
+            ],
         ];
     }
 }

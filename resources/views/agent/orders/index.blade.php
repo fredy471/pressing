@@ -52,7 +52,7 @@
             <tr>
                 <td class="px-6 py-4 font-mono text-text">{{ $order->tracking_code }}</td>
                 <td class="px-6 py-4 text-text">{{ $order->user->name }}</td>
-                <td class="px-6 py-4"><x-status-badge :statut="$order->status" /></td>
+                <td class="px-6 py-4"><x-status-badge :status="$order->status" /></td>
                 <td class="px-6 py-4 text-right font-mono font-semibold text-text">
                     {{ number_format($order->total_amount, 0, ',', ' ') }} F
                 </td>

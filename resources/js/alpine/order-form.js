@@ -2,9 +2,9 @@ export default function orderForm(services) {
     return {
         services: services,
         openService: services.length > 0 ? services[0].id : null,
-        selections: {},       
-        prices: {},           
-        clothesTypesPerService: {}, 
+        selections: {},
+        prices: {},
+        clothesTypesPerService: {},
         loadingServiceId: null,
 
         deliveryMode: 'depot_physique',
@@ -24,22 +24,38 @@ export default function orderForm(services) {
             }
         },
 
-        async loadServiceData(serviceId) {
+        loadError: null,
+
+        async loadServiceData(serviceId, attempt = 1) {
             if (this.clothesTypesPerService[serviceId]) return;
 
             this.loadingServiceId = serviceId;
+            this.loadError = null;
             try {
-                const response = await fetch(`/api/services/${serviceId}/prices`);
+                const response = await fetch(`/api/services/${serviceId}/prices`, {
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                    credentials: 'same-origin',
+                });
+
+                if (!response.ok) {
+                    // 502/503/504 : instance Render en cours de réveil → nouvelle tentative
+                    if ([502, 503, 504].includes(response.status) && attempt < 4) {
+                        await new Promise(r => setTimeout(r, attempt * 3000));
+                        return await this.loadServiceData(serviceId, attempt + 1);
+                    }
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
                 const data = await response.json();
-                
-                this.clothesTypesPerService[serviceId] = data.clothes_types;
-                
+                this.clothesTypesPerService[serviceId] = data.clothes_types ?? [];
+
                 if (!this.prices[serviceId]) this.prices[serviceId] = {};
-                Object.entries(data.prices).forEach(([clothesTypeId, price]) => {
-                    this.prices[serviceId][clothesTypeId] = price;
+                Object.entries(data.prices ?? {}).forEach(([id, price]) => {
+                    this.prices[serviceId][id] = Number(price) || 0;
                 });
             } catch (error) {
                 console.error('Erreur lors du chargement des tarifs', error);
+                this.loadError = 'Impossible de charger les tarifs. Réessayez dans un instant.';
             } finally {
                 this.loadingServiceId = null;
             }
@@ -78,7 +94,7 @@ export default function orderForm(services) {
                     total += this.selections[sId][tId];
                 }
             }
-                return total;
+            return total;
         },
 
         get totalPrice() {
@@ -94,14 +110,14 @@ export default function orderForm(services) {
         },
 
         get canSubmit() {
-            return this.totalItems > 0 && 
-                   (this.deliveryMode !== 'collecte_livraison' || (this.pickup_address.trim() !== '' && this.pickup_phone.trim() !== ''));
+            return this.totalItems > 0 &&
+                (this.deliveryMode !== 'collecte_livraison' || (this.pickup_address.trim() !== '' && this.pickup_phone.trim() !== ''));
         },
 
         formatPrice(value) {
             return new Intl.NumberFormat('fr-FR').format(value || 0);
         },
 
-        beforeSubmit() {}
+        beforeSubmit() { }
     }
 }

@@ -6,13 +6,12 @@
             </a>
 
             <div class="flex items-center gap-8 max-[920px]:hidden">
-                @guest
+
                 <x-nav-link :active="request()->routeIs('home')" href="{{ route('home') }}">
                     Accueil
                 </x-nav-link>
-                @endguest
 
-                <x-nav-link :active="request()->routeIs('orders.create')" href="{{ route('orders.create') }}">
+                <x-nav-link :active="request()->routeIs('orders.create')" href="{{ route('client.orders.create') }}">
                     Services & Tarifs
                 </x-nav-link>
 
@@ -34,7 +33,7 @@
                     Se connecter
                 </x-button>
 
-                <x-button href="{{ route('orders.create') }}" variant="primary" class="max-[920px]:hidden">
+                <x-button href="{{ route('client.orders.create') }}" variant="primary" class="max-[920px]:hidden">
                     Lancer ma commande
                 </x-button>
                 @endguest
@@ -77,13 +76,12 @@
                 </div>
 
                 <nav class="flex flex-col gap-3">
-                    @guest
+
                     <x-responsive-nav-link :active="request()->routeIs('home')" href="{{ route('home') }}" @click="mobileOpen = false">
                         Accueil
                     </x-responsive-nav-link>
-                    @endguest
 
-                    <x-responsive-nav-link :active="request()->routeIs('orders.create')" href="{{ route('orders.create') }}" @click="mobileOpen = false">
+                    <x-responsive-nav-link :active="request()->routeIs('client.orders.create')" href="{{ route('client.orders.create') }}" @click="mobileOpen = false">
                         Services & Tarifs
                     </x-responsive-nav-link>
 

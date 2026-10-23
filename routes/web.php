@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 // Imports pour l'espace Client
 use App\Http\Controllers\Client\OrderController as ClientOrderController;
 use App\Http\Controllers\Client\PaymentController as ClientPaymentController;
+use App\Http\Controllers\PageController;
 
 //imports pour l'espace admin
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -23,44 +24,52 @@ use App\Http\Controllers\Agent\OrderController as AgentOrderController;
 
 
 
-// ==========================================
-// 0. ROUTES PUBLIQUES
-
-
-// Page d'accueil publique 
-Route::get('/', [App\Http\Controllers\PageController::class, 'index'])->name('home');
-Route::get('/contact', [App\Http\Controllers\PageController::class, 'contact'])->name('contact');
-Route::post('/contact', [App\Http\Controllers\Client\ContactController::class, 'StoreMessage'])->name('contact.form');
-
-Route::get('/commander', [ClientOrderController::class, 'create'])->name('orders.create');
-Route::get('/api/services/{service}/prices', [ClientOrderController::class, 'clothesTypesForService']);
-Route::get('/commander/{service}/{vetements}', [ClientOrderController::class, 'clothesTypesForService'])->name('orders.clothes-types');
-Route::post('/commander', [ClientOrderController::class, 'store'])->name('orders.store');
-
-Route::middleware('auth')->prefix('profile')->name('profile.')->group(function () {
-    Route::get('/', [ProfileController::class, 'edit'])->name('edit');
-    Route::patch('/', [ProfileController::class, 'update'])->name('update');
-    Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
-    Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('password.update');
-});
-
-
-
 
 
 // ==========================================
-// 1. ROUTE CLIENT
+// PAGES PUBLIQUES
 // ==========================================
+Route::get('/', [PageController::class, 'index'])->name('home');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::post('/contact', [PageController::class, 'sendContactForm'])->name('contact.form');
 
+// Création de commande & API tarifs (accessible aux invités)
+Route::get('/commande', [ClientOrderController::class, 'create'])->name('client.orders.create');
+Route::post('/commande', [ClientOrderController::class, 'store'])->name('client.orders.store');
+Route::get('/api/services/{service}/prices', [ClientOrderController::class, 'clothesTypesForService'])->name('client.orders.clothes-types-for-service');
+
+// Callbacks & Webhooks Paiement
+Route::get('/commandes/{reference}/paiement-callback', [ClientPaymentController::class, 'callback'])->name('client.payments.callback');
 Route::post('/webhooks/fedapay', [ClientPaymentController::class, 'webhook'])->name('webhooks.fedapay');
-Route::get('/commandes/{order}/paiement-callback', [ClientPaymentController::class, 'callback'])->name('client.payments.callback');
 
+
+// ==========================================
+// ESPACE CLIENT AUTHENTIFIÉ
+// ==========================================
 Route::middleware(['auth', 'role:client'])->prefix('client')->name('client.')->group(function () {
+
+    // 1. Routes statiques/spécifiques EN PREMIER (évite les conflits avec {order})
+    Route::get('/commandes/reprise', [ClientOrderController::class, 'resume'])->name('orders.resume');
+    Route::get('/commandes/validation', [ClientOrderController::class, 'pending'])->name('orders.pending');
+
+    // 2. Historique des commandes
     Route::get('/mes-commandes', [ClientOrderController::class, 'index'])->name('orders.index');
-    Route::get('/commander/{order}', [ClientOrderController::class, 'show'])->name('orders.show');
-    Route::get('/commandes/{order}/payer', [ClientPaymentController::class, 'initiate'])->name('payments.initiate');
-     Route::get('/payments/{reference}/status', [ClientPaymentController::class, 'status'])->name('payments.status');
+
+    // 3. Route dynamique avec paramètre {order} EN DERNIER
+    Route::get('/commandes/{order}', [ClientOrderController::class, 'show'])->name('orders.show');
+
+    // 4. Paiements client
+    Route::get('/payments/{reference}/status', [ClientPaymentController::class, 'status'])->name('payments.status');
+    Route::post('/commandes/{reference}/payer', [ClientPaymentController::class, 'initiate'])->name('payments.initiate');
 });
+
+// Routes de gestion du profil (Breeze)
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
 
 // ==========================================
 // 2. ROUTE AGENT

@@ -37,25 +37,29 @@ class DatabaseSeeder extends Seeder
         $agentPassword = env('DEMO_AGENT_PASSWORD') ?: Str::random(32);
         $adminPassword = env('DEMO_ADMIN_PASSWORD') ?: Str::random(32);
 
-        // Créer le compte agent de démonstration
-        $agent = User::create([
-            'name' => 'cololo',
-            'email' => 'cololo@example.com',
-            'phone' => '0188888888',
-            'domicile' => 'cotonou',
-            'password' => Hash::make($agentPassword),
-        ]);
+        // Compte agent : créé s'il n'existe pas
+        $agent = User::firstOrCreate(
+            ['email' => 'cololo@example.com'],
+            [
+                'name' => 'cololo',
+                'phone' => '0188888888',
+                'domicile' => 'cotonou',
+                'password' => Hash::make($agentPassword),
+            ]
+        );
 
         $agent->assignRole('agent');
 
-        // Créer le compte administrateur
-        $admin = User::create([
-            'name' => 'admin',
-            'email' => 'admin@example.com',
-            'phone' => '0177777777',
-            'domicile' => 'calavi',
-            'password' => Hash::make($adminPassword),
-        ]);
+        // Compte administrateur : créé s'il n'existe pas
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'admin',
+                'phone' => '0177777777',
+                'domicile' => 'calavi',
+                'password' => Hash::make($adminPassword),
+            ]
+        );
 
         $admin->assignRole('admin');
 

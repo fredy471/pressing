@@ -35,7 +35,7 @@
         </div>
         @endif
 
-        <form method="POST" action="{{ route('orders.store') }}"
+        <form method="POST" action="{{ route('client.orders.store') }}"
             x-data="orderForm({{ Js::from($services) }})"
             @submit="beforeSubmit">
             @csrf

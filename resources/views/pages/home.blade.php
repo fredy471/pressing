@@ -13,7 +13,7 @@
                 suivi en temps réel
             </p>
             <div class="flex flex-wrap gap-3">
-                <a href="{{ route('orders.create') }}" class="inline-flex items-center justify-center rounded-sm border border-transparent bg-accent px-5 py-2.5 text-[0.86rem] font-semibold text-inverse transition duration-200 hover:bg-accent2">
+                <a href="{{ route('client.orders.create') }}" class="inline-flex items-center justify-center rounded-sm border border-transparent bg-accent px-5 py-2.5 text-[0.86rem] font-semibold text-inverse transition duration-200 hover:bg-accent2">
                     Lancer ma commande
                 </a>
                 <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-sm border border-muted px-5 py-2.5 text-[0.86rem] font-semibold text-text transition duration-200 hover:border-text">
@@ -168,7 +168,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
             <!-- Étape 1 : Le point de départ (Mise en avant visuelle) -->
-            <div class="bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent)]/80 text-white rounded-3xl p-8 flex flex-col justify-between shadow-xl relative overflow-hidden group">
+            <div class="bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent)]/80 text-white rounded-3xl p-8 flex flex-col justify-between shadow-xl relative overflow-hidden group" data-aos="fade-up">
                 <div class="absolute -right-6 -bottom-6 text-9xl font-extrabold font-display opacity-10 select-none pointer-events-none">
                     01
                 </div>
@@ -188,7 +188,7 @@
             </div>
 
             <!-- Étape 2 -->
-            <div class="bg-white/60 dark:bg-white/[0.03] border border-black/5 dark:border-white/10 rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 hover:border-[var(--color-accent)]/50 hover:shadow-lg relative overflow-hidden group">
+            <div class="bg-white/60 dark:bg-white/[0.03] border border-black/5 dark:border-white/10 rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 hover:border-[var(--color-accent)]/50 hover:shadow-lg relative overflow-hidden group" data-aos="fade-up" data-aos-delay="100">
                 <div class="absolute -right-6 -bottom-6 text-9xl font-extrabold font-display text-[var(--color-accent)]/10 select-none pointer-events-none group-hover:scale-110 transition-transform duration-300">
                     02
                 </div>
@@ -208,7 +208,7 @@
             </div>
 
             <!-- Étape 3 -->
-            <div class="bg-white/60 dark:bg-white/[0.03] border border-black/5 dark:border-white/10 rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 hover:border-[var(--color-accent)]/50 hover:shadow-lg relative overflow-hidden group">
+            <div class="bg-white/60 dark:bg-white/[0.03] border border-black/5 dark:border-white/10 rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 hover:border-[var(--color-accent)]/50 hover:shadow-lg relative overflow-hidden group" data-aos="fade-up" data-aos-delay="200">
                 <div class="absolute -right-6 -bottom-6 text-9xl font-extrabold font-display text-[var(--color-accent)]/10 select-none pointer-events-none group-hover:scale-110 transition-transform duration-300">
                     03
                 </div>
@@ -228,7 +228,7 @@
             </div>
 
             <!-- Étape 4 -->
-            <div class="bg-white/60 dark:bg-white/[0.03] border border-black/5 dark:border-white/10 rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 hover:border-[var(--color-accent)]/50 hover:shadow-lg relative overflow-hidden group">
+            <div class="bg-white/60 dark:bg-white/[0.03] border border-black/5 dark:border-white/10 rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 hover:border-[var(--color-accent)]/50 hover:shadow-lg relative overflow-hidden group" data-aos="fade-up" data-aos-delay="300">
                 <div class="absolute -right-6 -bottom-6 text-9xl font-extrabold font-display text-[var(--color-accent)]/10 select-none pointer-events-none group-hover:scale-110 transition-transform duration-300">
                     04
                 </div>
@@ -250,7 +250,7 @@
         </div>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-16">
-            <a href="{{ route('orders.create') }}" class="w-full sm:w-auto inline-flex items-center justify-between gap-6 pl-8 pr-2 py-2 rounded-full font-semibold text-inverse bg-[var(--color-accent)] shadow-lg shadow-[var(--color-accent)]/25 hover:opacity-95 transition-all duration-300 group">
+            <a href="{{ route('client.orders.create') }}" class="w-full sm:w-auto inline-flex items-center justify-between gap-6 pl-8 pr-2 py-2 rounded-full font-semibold text-inverse bg-[var(--color-accent)] shadow-lg shadow-[var(--color-accent)]/25 hover:opacity-95 transition-all duration-300 group">
                 <span>Commencer ma commande</span>
                 <span class="w-10 h-10 rounded-full bg-white text-[var(--color-accent)] flex items-center justify-center transform group-hover:scale-105 transition-transform">
                     <i class="fa fa-arrow-right" aria-hidden="true"></i>
@@ -302,7 +302,7 @@
                             <span class="font-display text-2xl font-bold text-[var(--color-accent)]">dès 1500 FCFA</span>
                             <span class="text-xs text-[var(--color-muted)]">/ pièce</span>
                         </div>
-                        <a href="{{ route('orders.create') }} " class="w-full inline-flex items-center justify-center font-[family-name:var(--font-sans)] font-medium text-sm bg-[var(--color-accent)] text-white py-3 px-4 rounded-xl shadow-sm hover:opacity-95 transition-opacity dark:text-[#000]">
+                        <a href="{{ route('client.orders.create') }} " class="w-full inline-flex items-center justify-center font-[family-name:var(--font-sans)] font-medium text-sm bg-[var(--color-accent)] text-white py-3 px-4 rounded-xl shadow-sm hover:opacity-95 transition-opacity dark:text-[#000]">
                             Commander
                         </a>
                     </div>
