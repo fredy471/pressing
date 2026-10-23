@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Order;
+use App\Enums\PaymentStatus;
+use App\Enums\OrderStatus;
 use App\Models\OrderItem;
 use App\Models\Payment;
 use Illuminate\View\View;
@@ -18,7 +20,7 @@ class DashboardController extends Controller
 
         $stats = [
             // Global stats (clés harmonisées avec la vue)
-            'globalRevenue' => Payment::where('status', 'reussi')->sum('amount'),
+            'globalRevenue' => Payment::where('status', PaymentStatus::REUSSI)->sum('amount'),
             'total_orders' => Order::count(),
             'total_clients' => User::role('client')->count(),
             'total_agents' => User::role('agent')->count(),
@@ -29,7 +31,7 @@ class DashboardController extends Controller
                 $endOfMonth
             ])->count(),
 
-            'revenue_this_month' => Payment::where('status', 'reussi')
+            'revenue_this_month' => Payment::where('status', PaymentStatus::REUSSI)
                 ->whereBetween('created_at', [
                     $startOfMonth,
                     $endOfMonth
@@ -48,6 +50,14 @@ class DashboardController extends Controller
         $ordersByStatus = Order::selectRaw('status, count(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');
+
+        // Ajouter les statuts absents avec un total de zéro
+        foreach (OrderStatus::cases() as $status) {
+            $ordersByStatus->put(
+                $status->value,
+                $ordersByStatus->get($status->value, 0)
+            );
+        }
 
         // Service le plus populaire
         $topService = OrderItem::selectRaw('service_id, count(*) as total')

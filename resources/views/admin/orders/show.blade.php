@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 @section('title', 'Détails de la commande')
+@use('App\Enums\OrderStatus')
 @section('content')
 
 <!-- Bouton Retour -->
@@ -13,7 +14,7 @@
     <div>
         <div class="flex flex-wrap items-center gap-3">
             <h1 class="font-display font-bold text-xl md:text-2xl text-text font-mono">{{ $order->tracking_code }}</h1>
-            <x-status-badge :statut="$order->statut" />
+            <x-status-badge :status="$order->status" />
         </div>
         <div class="text-sm text-muted mt-2 flex flex-wrap gap-x-4 gap-y-1">
             <p><span class="text-text font-medium">Client :</span> {{ $order->user->name }}</p>

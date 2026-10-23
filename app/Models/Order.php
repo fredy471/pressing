@@ -17,6 +17,7 @@ class Order extends Model
         return [
             'status' => OrderStatus::class,
             'deposit_deadline' => 'datetime',
+            'deposited_at' => 'datetime',
         ];
     }
 
@@ -61,17 +62,8 @@ class Order extends Model
         return $code;
     }
 
-    public function canTransitionTo(string $newStatus): string
+    public function canTransitionTo(OrderStatus $newStatus): bool
     {
-        $allowedTransitions = [
-            'en_attente' => ['recue', 'annulee'],
-            'recue' => ['en_lavage', 'annulee'],
-            'en_lavage' => ['terminee'],
-            'terminee' => ['livree'],
-            'livree' => [],
-            'annulee' => [],
-        ];
-
-        return in_array($newStatus, $allowedTransitions[$this->status] ?? []);
+        return $this->status->canTransitionTo($newStatus);
     }
 }

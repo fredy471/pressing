@@ -339,7 +339,7 @@
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
 
             <!-- Bouton Principal -->
-            <x-button href="{{ route('orders.create') }}" class="w-full sm:w-auto justify-center bg-bg text-text hover:bg-bg/90 hover:text-white py-3.5 px-8">
+            <x-button href="{{ route('client.orders.create') }}" class="w-full sm:w-auto justify-center bg-bg text-text hover:bg-bg/90 hover:text-white py-3.5 px-8">
                 Lancer ma commande
             </x-button>
 

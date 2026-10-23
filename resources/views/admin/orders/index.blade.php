@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 @section('title', 'Toutes les commandes')
+@use('App\Enums\OrderStatus')
 @section('content')
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <h1 class="font-display font-bold text-xl md:text-2xl text-text">Toutes les commandes</h1>
@@ -12,8 +13,10 @@
 
     <select name="status" class="rounded-xl border-muted/20 bg-content text-text text-sm px-4 py-2.5 focus:border-accent focus:ring-accent shadow-xs" onchange="this.form.submit()">
         <option value="">Tous les statuts</option>
-        @foreach (['en_attente', 'recue', 'en_lavage', 'terminee', 'livree', 'annulee'] as $status)
-        <option value="{{ $status }}" @selected(request('status')===$status)>{{ ucfirst(str_replace('_', ' ', $status)) }}</option>
+        @foreach (OrderStatus::cases() as $status)
+        <option value="{{ $status->value }}" @selected(request('status')===$status->value)>
+            {{ $status->label() }}
+        </option>
         @endforeach
     </select>
 
@@ -44,7 +47,7 @@
             <div class="lg:col-span-2 flex items-center justify-between lg:justify-start">
                 <span class="font-mono font-semibold text-text text-sm">{{ $order->tracking_code }}</span>
                 <div class="lg:hidden">
-                    <x-status-badge :statut="$order->statut" />
+                    <x-status-badge :status="$order->status" />
                 </div>
             </div>
 
@@ -70,7 +73,7 @@
 
             <!-- Statut (Desktop uniquement) -->
             <div class="hidden lg:block lg:col-span-2">
-                <x-status-badge :statut="$order->statut" />
+                <x-status-badge :status="$order->status" />
             </div>
 
             <!-- Montant -->

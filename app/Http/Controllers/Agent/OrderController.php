@@ -81,15 +81,11 @@ class OrderController extends Controller
         return view('agent.orders.show', compact('order'));
     }
 
-    public function updateStatus(
-        UpdateOrderStatutRequest $request,
-        Order $order
-    ): RedirectResponse {
-        $data = $request->validated();
+    public function updateStatus(UpdateOrderStatutRequest $request, Order $order): RedirectResponse
+    {
+        $newStatus = OrderStatus::from($request->validated('status'));
 
-        $newStatus = OrderStatus::from($data['status']);
-
-        if (! $order->status->canTransitionTo($newStatus)) {
+        if (! $order->canTransitionTo($newStatus)) {
             return back()->with('error', 'Transition de statut non autorisée.');
         }
 

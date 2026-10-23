@@ -16,7 +16,7 @@ class OrderController extends Controller
     {
         $orders = Order::with(['user', 'agent', 'items.service'])
             ->when($request->filled('status'), function ($query) use ($request) {
-                $query->where('statut', $request->status);
+                $query->where('status', $request->status);
             })
             ->when($request->filled('search'), function ($query) use ($request) {
                 $query->where('tracking_code', 'like', '%' . $request->search . '%');
