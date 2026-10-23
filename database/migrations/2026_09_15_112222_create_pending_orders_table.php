@@ -15,13 +15,12 @@ return new class extends Migration
         Schema::create('pending_orders', function (Blueprint $table) {
             $table->id();
             $table->uuid('reference')->unique();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->json('payload');
             $table->decimal('total_amount', 10, 2);
             $table->string('fedapay_transaction_id')->nullable();
-            $table->enum('status', ['en_attente', 'recue', 'en_lavage', 'terminee', 'livree', 'annulee'])->default('en_attente');
+            $table->enum('status', ['en_attente', 'recue', 'en_lavage', 'terminee', 'livree', 'annulee','confirmed'])->default('en_attente');
             $table->foreignId('order_id')->nullable()->constrained()->onDelete('set null');
-            $table->unique('user_id');
             $table->timestamps();
         });
     }
