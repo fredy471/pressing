@@ -68,53 +68,66 @@ class PaymentController extends Controller
 
         try {
             $event = \FedaPay\Webhook::constructEvent($payload, $sigHeader, config('services.fedapay.webhook_secret'));
-            Log::info('Webhook FedaPay reçu', [
-                'event' => $request->input('name'),
-                'payload' => $request->all(),
-                'signature_present' => $request->hasHeader('X-FEDAPAY-SIGNATURE'),
-            ]);
         } catch (\Exception $e) {
             Log::warning('Webhook FedaPay rejeté', ['error' => $e->getMessage()]);
             return response()->json(['message' => 'Invalide'], 400);
         }
 
-        $transactionId = $event->object->id ?? null;
+        // Le nom de l'événement et l'identifiant de transaction se trouvent dans « entity » / « object_id »
+        $eventName     = $event->name ?? $event->type ?? null;
+        $transactionId = $event->entity->id ?? $event->object_id ?? null;
+
+        // Journal sans données personnelles : uniquement le nom, l'identifiant et les clés reçues
+        Log::info('Webhook FedaPay reçu', [
+            'event'          => $eventName,
+            'transaction_id' => $transactionId,
+            'cles'           => array_keys($request->all()),
+        ]);
+
         if (! $transactionId) {
+            Log::warning('Webhook FedaPay sans identifiant de transaction', ['cles' => array_keys($request->all())]);
             return response()->json(['message' => 'Ignoré'], 200);
         }
 
-        DB::transaction(function () use ($event, $transactionId) {
+        DB::transaction(function () use ($event, $eventName, $transactionId) {
             // Verrou : deux livraisons simultanées du même webhook ne créent qu'une commande.
             $pendingOrder = PendingOrder::where('fedapay_transaction_id', $transactionId)
                 ->lockForUpdate()
                 ->first();
 
-            if (! $pendingOrder || $pendingOrder->status !== 'en_attente') {
-                return; // inconnu, ou déjà traité (relivraison)
+            if (! $pendingOrder) {
+                Log::warning('Webhook FedaPay : aucune commande en attente pour cette transaction', [
+                    'transaction_id' => $transactionId,
+                ]);
+                return;
             }
 
-            if ($event->name === 'transaction.approved') {
-                $paid = $event->object->amount ?? null;
+            if ($pendingOrder->status !== 'en_attente') {
+                return; // déjà traité (relivraison)
+            }
+
+            if ($eventName === 'transaction.approved') {
+                $paid = $event->entity->amount ?? null;
                 if ($paid !== null && (int) $paid !== (int) $pendingOrder->total_amount) {
                     Log::error('Montant FedaPay différent du montant attendu', [
                         'pending' => $pendingOrder->id,
                         'attendu' => $pendingOrder->total_amount,
-                        'recu' => $paid,
+                        'recu'    => $paid,
                     ]);
                     return; // à rapprocher manuellement
                 }
 
                 $order = $this->materializeOrder($pendingOrder);
                 $order->payments()->create([
-                    'amount' => $pendingOrder->total_amount,
-                    'method' => 'mobile_money',
-                    'provider' => 'fedapay',
-                    'status' => 'reussi',
+                    'amount'             => $pendingOrder->total_amount,
+                    'method'             => 'mobile_money',
+                    'provider'           => 'fedapay',
+                    'status'             => 'reussi',
                     'provider_reference' => $pendingOrder->fedapay_transaction_id,
-                    'paid_at' => now(),
+                    'paid_at'            => now(),
                 ]);
                 $pendingOrder->update(['status' => 'confirmed', 'order_id' => $order->id]);
-            } elseif ($event->name === 'transaction.canceled') {
+            } elseif ($eventName === 'transaction.canceled') {
                 $pendingOrder->update(['status' => 'annulee']);
             }
         });

@@ -52,7 +52,7 @@
                 </div>
                 <div>
                     <span class="block text-xs text-muted">Statut</span>
-                    <strong class="mt-1 block uppercase text-text">{{ str_replace('_', ' ', $latestOrder->statut ?? 'en_attente') }}</strong>
+                    <strong class="mt-1 block uppercase text-text">{{ str_replace('_', ' ', $latestOrder->status?->value ?? 'en_attente') }}</strong>
                 </div>
             </div>
 

@@ -4,17 +4,18 @@
 
 <h1 class="font-display font-bold text-2xl text-text">Commandes à traiter</h1>
 
+<!-- Formulaire responsive -->
 <form method="GET" class="flex flex-wrap gap-3 mt-6" action="{{ route('agent.orders.index') }}">
     <input type="text" name="name" value="{{ request('name') }}" placeholder="Nom du client..."
-        class="rounded-lg border-muted/20 bg-content text-sm w-52">
+        class="rounded-lg border-muted/20 bg-content text-sm w-full sm:w-52">
 
     <input type="text" name="email" value="{{ request('email') }}" placeholder="Email du client..."
-        class="rounded-lg border-muted/20 bg-content text-sm w-56">
+        class="rounded-lg border-muted/20 bg-content text-sm w-full sm:w-56">
 
     <input type="text" name="tracking_code" value="{{ request('tracking_code') }}" placeholder="Code de suivi..."
-        class="rounded-lg border-muted/20 bg-content text-sm w-52">
+        class="rounded-lg border-muted/20 bg-content text-sm w-full sm:w-52">
 
-    <select name="status" class="rounded-lg border-muted/20 bg-content text-sm" onchange="this.form.submit()">
+    <select name="status" class="rounded-lg border-muted/20 bg-content text-sm w-full sm:w-auto" onchange="this.form.submit()">
         <option value="">Statuts actifs</option>
 
         @foreach (['en_attente','recue','en_lavage','terminee','livree','annulee'] as $status)
@@ -24,51 +25,56 @@
         @endforeach
     </select>
 
-    <button type="submit" class="bg-accent/10 text-accent font-medium text-sm px-5 py-2.5 rounded-xl hover:bg-accent/20 transition">
-        Filtrer
-    </button>
+    <div class="flex items-center gap-3 w-full sm:w-auto">
+        <button type="submit" class="flex-1 sm:flex-none bg-accent/10 text-accent font-medium text-sm px-5 py-2.5 rounded-xl hover:bg-accent/20 transition text-center">
+            Filtrer
+        </button>
 
-    @if (request()->hasAny(['name', 'email', 'tracking_code', 'status']))
-    <a href="{{ url()->current() }}"
-        class="text-sm px-4 py-2.5 rounded-xl border border-muted/20 hover:bg-content transition">
-        Réinitialiser
-    </a>
-    @endif
+        @if (request()->hasAny(['name', 'email', 'tracking_code', 'status']))
+        <a href="{{ url()->current() }}"
+            class="flex-1 sm:flex-none text-sm px-4 py-2.5 rounded-xl border border-muted/20 hover:bg-content transition text-center">
+            Réinitialiser
+        </a>
+        @endif
+    </div>
 </form>
 
+<!-- Tableau responsive avec défilement horizontal -->
 <div class="bg-content rounded-xl border border-muted/10 mt-6 overflow-hidden">
-    <table class="w-full text-sm">
-        <thead class="bg-inverse/40 text-muted text-xs uppercase tracking-wide">
-            <tr>
-                <th class="text-left px-6 py-3 font-mono">Code</th>
-                <th class="text-left px-6 py-3 font-mono">Client</th>
-                <th class="text-left px-6 py-3 font-mono">Statut</th>
-                <th class="text-right px-6 py-3 font-mono">Total</th>
-                <th class="text-right px-6 py-3 font-mono">Action</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-muted/10">
-            @forelse ($orders as $order)
-            <tr>
-                <td class="px-6 py-4 font-mono text-text">{{ $order->tracking_code }}</td>
-                <td class="px-6 py-4 text-text">{{ $order->user->name }}</td>
-                <td class="px-6 py-4"><x-status-badge :status="$order->status" /></td>
-                <td class="px-6 py-4 text-right font-mono font-semibold text-text">
-                    {{ number_format($order->total_amount, 0, ',', ' ') }} F
-                </td>
-                <td class="px-6 py-4 text-right">
-                    <a href="{{ route('agent.orders.show', $order) }}" class="text-accent text-sm font-medium hover:underline">Traiter</a>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="5" class="text-center text-muted py-4">
-                    Aucune commande ne correspond aux critères de recherche.
-                </td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm whitespace-nowrap">
+            <thead class="bg-inverse/40 text-muted text-xs uppercase tracking-wide">
+                <tr>
+                    <th class="text-left px-6 py-3 font-mono">Code</th>
+                    <th class="text-left px-6 py-3 font-mono">Client</th>
+                    <th class="text-left px-6 py-3 font-mono">Statut</th>
+                    <th class="text-right px-6 py-3 font-mono">Total</th>
+                    <th class="text-right px-6 py-3 font-mono">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-muted/10">
+                @forelse ($orders as $order)
+                <tr>
+                    <td class="px-6 py-4 font-mono text-text">{{ $order->tracking_code }}</td>
+                    <td class="px-6 py-4 text-text">{{ $order->user->name }}</td>
+                    <td class="px-6 py-4"><x-status-badge :status="$order->status" /></td>
+                    <td class="px-6 py-4 text-right font-mono font-semibold text-text">
+                        {{ number_format($order->total_amount, 0, ',', ' ') }} F
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="{{ route('agent.orders.show', $order) }}" class="text-accent text-sm font-medium hover:underline">Traiter</a>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">
+                        Aucune commande ne correspond aux critères de recherche.
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <div class="mt-6">{{ $orders->links() }}</div>

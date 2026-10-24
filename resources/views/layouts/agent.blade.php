@@ -52,7 +52,7 @@
 
             <!-- User profile / Logout section -->
             <div class="p-4 border-t border-muted/10 bg-inverse/[0.01]">
-                <x-action />
+                <x-action :mobile="true" />
             </div>
         </aside>
 

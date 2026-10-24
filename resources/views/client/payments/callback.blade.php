@@ -27,7 +27,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // URLs relatives : aucun risque de http/https mélangé derrière un tunnel ou un proxy
-        const statusUrl = @json(route('client.payments.status', $pendingOrder - > reference, false));
+        const statusUrl = @json(route('client.payments.status', $pendingOrder->reference, false));
         const ordersUrl = @json(route('client.orders.index', [], false));
         const messageEl = document.getElementById('payment-status-message');
 

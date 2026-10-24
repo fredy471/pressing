@@ -26,7 +26,7 @@
                         @case('cancelled') bg-danger/10 text-danger border border-danger/20 @break
                         @default bg-muted/10 text-muted border border-muted/20
                     @endswitch">
-                    {{ ucfirst($order->statut ?? 'En attente') }}
+                    {{ ucfirst($order->status?->value ?? 'en_attente') }}
                 </span>
             </div>
             <p class="text-muted text-sm mt-1.5">Passée le {{ $order->created_at->format('d/m/Y à H:i') }}</p>
@@ -134,7 +134,7 @@
                 </div>
 
                 <!-- Actions contextuelles -->
-                @if(($order->statut ?? 'en_attente') === 'en_attente')
+                @if(($order->status?->value ?? 'en_attente') === 'en_attente')
                 <a href="{{ route('client.orders.index') }}"
                     class="w-full text-text bg-inverse/5 hover:bg-inverse/10 font-medium text-sm py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2">
                     <i class="fa-solid fa-arrow-left text-xs"></i>

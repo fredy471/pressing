@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PendingOrder extends Model
 {
-    protected $fillable = ['reference', 'user_id', 'payload', 'total_amount', 'fedapay_transaction_id', 'statut', 'order_id'];
+    protected $fillable = ['reference', 'user_id', 'payload', 'total_amount', 'fedapay_transaction_id', 'status', 'order_id'];
 
     protected $casts = ['payload' => 'array'];
 

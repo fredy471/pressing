@@ -1,7 +1,7 @@
 @props(['order'])
 
 @php
-    $status = $order->statut ?? 'en_attente';
+    $status = $order->status?->value ?? 'en_attente';
     $stepIndex = match ($status) {
         'en_attente' => 0,
         'recue', 'confirmee' => 1,
@@ -66,7 +66,7 @@
     </div>
 
     <div class="flex items-center justify-between rounded-b-xl border-t border-muted/10 bg-inverse/[0.03] px-[26px] py-[14px] font-[family-name:var(--mono)] text-[0.7rem] text-muted">
-        <span>Statut : <strong class="uppercase text-text">{{ ucfirst($order->statut ?? 'En attente') }}</strong></span>
+        <span>Statut : <strong class="uppercase text-text">{{ ucfirst($order->status?->value ?? 'en_attente') }}</strong></span>
         <a href="{{ route('client.orders.show', $order) }}" class="flex items-center gap-1 font-semibold text-accent hover:underline">
             <span>Détails</span>
             <i class="fa-solid fa-arrow-right text-[9px]"></i>
