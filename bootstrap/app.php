@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
         // Exclude the FedaPay webhook from CSRF protection
-        $middleware->validateCsrfTokens(except: [
+        $middleware->preventRequestForgery(except: [
             'webhooks/fedapay',
         ]);
 
