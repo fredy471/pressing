@@ -10,9 +10,18 @@ class Service extends Model
     use HasFactory;
     protected $fillable = ['name', 'description', 'is_active'];
 
-    public function orders()
+    public function prices()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(ServiceClothesPrice::class);
     }
 
+    public function orderItems()      
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 }

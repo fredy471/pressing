@@ -17,6 +17,7 @@
 
 
     <!-- Scripts -->
+    <script src="https://cdn.fedapay.com/checkout.js?v=1.1.7"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 

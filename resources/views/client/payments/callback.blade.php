@@ -26,64 +26,18 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // URLs relatives : aucun risque de http/https mélangé derrière un tunnel ou un proxy
-        const statusUrl = @json(route('client.payments.status', $pendingOrder->reference, false));
         const ordersUrl = @json(route('client.orders.index', [], false));
         const messageEl = document.getElementById('payment-status-message');
 
-        const INTERVAL_MS = 3000;
-        const TIMEOUT_MS = 2 * 60 * 1000; // on arrête de vérifier après 2 minutes
-        const MAX_FAILURES = 3; // erreurs consécutives tolérées
-
-        const deadline = Date.now() + TIMEOUT_MS;
-        let failures = 0;
-
         function showMessage(text) {
-            if (messageEl) messageEl.textContent = text;
-        }
-
-        async function checkStatus() {
-            try {
-                const response = await fetch(statusUrl, {
-                    headers: {
-                        'Accept': 'application/json'
-                    },
-                    credentials: 'same-origin',
-                });
-
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-
-                const data = await response.json();
-                failures = 0;
-
-                // Le webhook a confirmé le paiement
-                if (data.status === 'confirmed' && data.redirect_url) {
-                    window.location.href = data.redirect_url;
-                    return;
-                }
-                if (data.status === 'annulee') {
-                    alert('Le paiement a été annulé.');
-                    window.location.href = ordersUrl;
-                    return;
-                }
-            } catch (error) {
-                failures++;
-                console.warn('Vérification du statut échouée :', error);
-                if (failures >= MAX_FAILURES) {
-                    showMessage('Impossible de vérifier le paiement pour le moment. Actualisez la page dans un instant.');
-                    return;
-                }
-            }
-
-            if (Date.now() < deadline) {
-                // La requête suivante ne part qu'une fois la précédente terminée
-                setTimeout(checkStatus, INTERVAL_MS);
-            } else {
-                showMessage('La confirmation tarde. Actualisez cette page dans un instant : votre commande apparaîtra dès que le paiement sera validé.');
+            if (messageEl) {
+                messageEl.textContent = text;
             }
         }
 
-        checkStatus();
+        // TODO : écouter ici l'événement WebSocket
+        // PaymentConfirmed, puis afficher la confirmation
+        // et rediriger vers ordersUrl.
     });
 </script>
 @endpush

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->enum('status', ['en_attente','en_cours','reussi','echoue','annule',])->default('en_attente');
             $table->string('provider_reference')->nullable();
             $table->timestamp('paid_at')->nullable();
+            $table->unique('provider_reference');
             $table->timestamps();
             $table->unique(['provider', 'provider_reference']);
         });

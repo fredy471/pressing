@@ -143,17 +143,16 @@
                         </div>
 
                         <!-- Champs de collecte conditionnels -->
-                        <!-- Champs de collecte conditionnels -->
                         <div x-show="deliveryMode === 'collecte_livraison'" x-cloak
                             x-transition:enter="transition ease-out duration-200"
                             class="mt-4 pt-4 border-t border-muted/10 space-y-4">
                             <div>
                                 <label class="block text-xs uppercase tracking-wider text-muted font-semibold mb-1.5">Adresse de collecte</label>
                                 <input type="text" name="pickup_address" x-model="pickup_address"
-                                    x-init="pickup_address = $el.value"
-                                    value="{{ old('pickup_address', session('domicile')) }}"
+                                    x-init="pickup_adress = $el.value"
+                                    value="{{ old('pickup_adress', session('domicile')) }}"
                                     class="w-full rounded-xl border-muted/20 bg-bg text-text text-sm px-4 py-2.5 focus:border-accent focus:ring-accent shadow-inner"
-                                    x-bind:required="deliveryMode === 'collecte_livraison'">
+                                    x-bind:required="deliveryMode === 'collecte_livraison'" required>
                             </div>
 
                             <div>
@@ -162,7 +161,7 @@
                                     x-init="pickup_phone = $el.value"
                                     value="{{ old('pickup_phone', session('phone')) }}"
                                     class="w-full rounded-xl border-muted/20 bg-bg text-text text-sm px-4 py-2.5 focus:border-accent focus:ring-accent shadow-inner"
-                                    x-bind:required="deliveryMode === 'collecte_livraison'">
+                                    x-bind:required="deliveryMode === 'collecte_livraison'" required>
                             </div>
                         </div>
                     </div>

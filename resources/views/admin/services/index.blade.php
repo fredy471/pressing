@@ -90,7 +90,8 @@
 <!-- N.B. et Pagination -->
 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-6">
     <p class="text-[11px] md:text-xs text-text leading-relaxed font-medium">
-        N B : Vous pouvez modifier directement la description d'un service en cliquant simplement dessus.
+        N B : Vous pouvez modifier directement la description d'un service en cliquant simplement dessus.<br />
+        <span class="ms-5"></span> Les services sans prix definis ne sont s'afficherons pas sur la page . les clients ne verront donc pas se service
     </p>
 </div>
 

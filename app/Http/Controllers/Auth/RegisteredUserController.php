@@ -60,6 +60,11 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        session([
+            'domicile' => $request->domicile,
+            'phone' => $request->phone,
+        ]);
+
         if (session()->has('post_login_redirect')) {
             return redirect(session()->pull('post_login_redirect'));
         }

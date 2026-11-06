@@ -37,4 +37,11 @@ class FedaPayService
         return $transaction->generateToken()->url;
     }
 
+    /**
+     * Récupère l'état réel d'une transaction directement auprès de FedaPay.
+     */
+    public function retrieveTransaction(int|string $transactionId): Transaction
+    {
+        return Transaction::retrieve($transactionId);
+    }
 }

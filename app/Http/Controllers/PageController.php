@@ -11,11 +11,18 @@ class PageController extends Controller
 {
     public function index()
     {
+        $services = Service::active()
+            ->withMin(['prices as min_price' => fn($q) =>
+            $q->whereHas('clothesType', fn($c) => $c->active())], 'price')
+            ->orderBy('name')
+            ->get();
+
         return response()
-            ->view('pages.home')
+            ->view('pages.home', compact('services'))
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             ->header('Pragma', 'no-cache');
     }
+    
     public function services()
     {
         // On récupère uniquement les services actifs depuis la base de données
@@ -45,7 +52,7 @@ class PageController extends Controller
             'website' => 'nullable|string|max:255',
         ]);
 
-        
+
 
         // Ici, vous pouvez envoyer l'e-mail ou stocker le message dans la base de données        
         Contact::create($validatedData);

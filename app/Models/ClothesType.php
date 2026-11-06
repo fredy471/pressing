@@ -20,4 +20,9 @@ class ClothesType extends Model
     {
         return $this->hasMany(ServiceClothesPrice::class);
     }
+    
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 }

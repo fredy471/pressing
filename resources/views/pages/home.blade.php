@@ -281,39 +281,15 @@
         <!-- Grille des cartes de services (3 colonnes) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 max-w-6xl mx-auto">
 
-            <!-- Carte 1 : Lavage et repassage -->
-            <div class="rounded-3xl bg-white dark:bg-[#16211D] shadow-sm border border-gray-100 flex flex-col justify-between overflow-hidden transform transition hover:-translate-y-1 hover:shadow-md group">
-                <!-- Image d'illustration du service -->
-                <div class="h-48 overflow-hidden relative">
-                    <img src=" {{ asset('images/lavage-repassage.jpg') }}" alt="Lavage et repassage" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                </div>
-
-                <div class="p-8 flex-1 flex flex-col justify-between">
-                    <div>
-                        <h3 class="font-display text-xl font-bold text-[var(--color-text)] mb-3">Lavage et repassage</h3>
-                        <p class="font-[family-name:var(--font-sans)] text-sm text-text leading-relaxed mb-6">
-                            Lavage complet en machine, séchage optimal et repassage soigné pour vos habits du quotidien.
-                        </p>
-                    </div>
-                    <div>
-                        <div class="mb-6">
-                            <span class="text-xs text-[var(--color-muted)] block uppercase tracking-wider">Tarif</span>
-                            <span class="font-display text-2xl font-bold text-[var(--color-accent)]">dès 1500 FCFA</span>
-                            <span class="text-xs text-[var(--color-muted)]">/ pièce</span>
-                        </div>
-                        <a href="{{ route('client.orders.create') }} " class="w-full inline-flex items-center justify-center font-[family-name:var(--font-sans)] font-medium text-sm bg-[var(--color-accent)] text-white py-3 px-4 rounded-xl shadow-sm hover:opacity-95 transition-opacity dark:text-[#000]">
-                            Commander
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Carte 2 : Repassage -->
-            <x-card-service-type title="Repassage" text="Repassage vapeur professionnel de haute précision qui préserve la fibre et l'éclat de vos tissus." minimumPrice="700" assets="images/repassage.jpg"/>
-
-              <!-- Carte 3 : Blanchisserie -->
-            <x-card-service-type title="Blanchisserie"  text="Élimination efficace des taches et nettoyage en profondeur de vos vêtements pour leur redonner fraîcheur, propreté et éclat." minimumPrice="1000" assets="images/lavage-repassage.jpg"/>
+            @forelse ($services as $service)
+            <x-card-service-type
+                :title="$service->name"
+                :text="$service->description ?? ''"
+                :minimum-price="$service->min_price"
+                :assets="$service->image ?: 'images/lavage-repassage.jpg'" />
+            @empty
+            <p class="md:col-span-3 text-center text-sm text-muted">Nos services seront bientôt disponibles.</p>
+            @endforelse
         </div>
     </div>
 </section>
